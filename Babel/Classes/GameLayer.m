@@ -10,7 +10,7 @@
 
 enum {
 	kTagGameLayer = 0,
-	kTagMenuLayer = 1,
+	kTagInterfaceLayer = 1,
 	kTagTileMap = 5,
 	kTagPlayer = 6,
 	kTagPlayerSel = 7,
@@ -18,7 +18,7 @@ enum {
 
 @implementation GameLayer
 
-@synthesize mapIndex, playerSel;
+@synthesize mapIndex, playerSel, players;
 
 -(id) init
 {
@@ -42,20 +42,26 @@ enum {
 	// usare indici x caricare map diverse
 	NSString *file = [[@"level" stringByAppendingString:[NSString stringWithFormat:@"%d", mapIndex]] stringByAppendingString:@".tmx"];
 	CCTMXTiledMap *tileMap = [CCTMXTiledMap tiledMapWithTMXFile:file];
-	
 	[self addChild:tileMap z:0 tag:kTagTileMap]; // tag 1
+	
+	for (CCSpriteSheet* child in [tileMap children])
+		[[child texture] setAntiAliasTexParameters];
 	
 	[tileMap reorderChild:[tileMap layerNamed:@"Layer 0"] z:1];
 	[tileMap reorderChild:[tileMap layerNamed:@"Layer 1"] z:2]; // mettere a 3 e player 2
 	
 	// LOAD SPRITE
-	
+		
 	CCSprite *selection = [CCSprite spriteWithFile:@"selezione.png"];
 	[tileMap addChild:selection z:3 tag:kTagPlayerSel]; // il pg sulla tile map e' taggato con 2 la tilemap 1
 	[selection setVisible:NO];
+	[selection setOpacity:99];
+	
+	//players = [NSMutableArray array];
 	
 	CCSpriteSheet *mgr_player = [CCSpriteSheet spriteSheetWithFile:@"grossini_dance_atlas.png" capacity:50];
 	[tileMap addChild:mgr_player z:4 tag:kTagPlayer]; // il pg sulla tile map e' taggato con 2 la tilemap 1
+	//[players addObject:mgr_player];
 	
 	[mgr_player setPosition:pos];
 	[mgr_player setScale:0.6f];
@@ -102,10 +108,10 @@ enum {
 	
 	GameLayer *glayer = [GameLayer node];
 	[glayer loadWithMap:nextMap playerPos:nextPos];
-	MenuLayer *mlayer = [MenuLayer node];
+	InterfaceLayer *mlayer = [InterfaceLayer node];
 	
 	[scene addChild:glayer z:0 tag:kTagGameLayer]; // tag 0
-	[scene addChild:mlayer z:1 tag:kTagMenuLayer]; // 1 tag del menu layer
+	[scene addChild:mlayer z:1 tag:kTagInterfaceLayer]; // 1 tag del menu layer
 	[[CCDirector sharedDirector] replaceScene:[CCFadeTransition transitionWithDuration:1.5f scene:scene]];
 }
 
@@ -113,18 +119,28 @@ enum {
 {
 	CCTMXTiledMap *tilemap = (CCTMXTiledMap *)[self getChildByTag:kTagTileMap]; // tag 1
 	
-	NSMutableDictionary *dest = [CoreFunctions getTileInfo:pos];
+	NSMutableDictionary *dest = [CoreFunctions getTileInfo:[CoreFunctions convertToISO:ccp(pos.x, pos.y)]];
 	CGPoint destIndex;
     [[dest objectForKey:@"tileIndex"] getValue:&destIndex];
+	
+	///
+	int gid = 0;
+	CGPoint destPos;
+	[[dest objectForKey:@"tilePos"] getValue:&destPos];
+	[[dest objectForKey:@"tileGID"] getValue:&gid];
+	CCLOG(@"------------>  %d, %d -- %d, %d = %d", (int)destIndex.x, (int)destIndex.y, (int)destPos.x, (int)destPos.y, (int)gid);
+	///
 	
 	int selp = 0;
 	
 	CCSpriteSheet *mgr_player = (CCSpriteSheet *)[tilemap getChildByTag:kTagPlayer]; // tag 2
 	CGPoint plpos = mgr_player.position;
 	
-	NSMutableDictionary *source = [CoreFunctions getTileInfo:plpos];
+	NSMutableDictionary *source = [CoreFunctions getTileInfo:[CoreFunctions convertToISO:ccp(plpos.x, plpos.y)]];
 	CGPoint sourceIndex;
     [[source objectForKey:@"tileIndex"] getValue:&sourceIndex];
+	
+	CCLOG(@"------------>  %d, %d", (int)sourceIndex.x, (int)sourceIndex.y);
 	
 	if (destIndex.x == sourceIndex.x && destIndex.y == sourceIndex.y)
 		selp = 1;
@@ -215,6 +231,7 @@ enum {
 	// cocos2d will automatically release all the children (Label)
 	
 	// don't forget to call "super dealloc"
+	[players release];
 	[super dealloc];
 }
 

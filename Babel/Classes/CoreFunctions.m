@@ -10,6 +10,7 @@
 
 #define TILE_WIDTH  64
 #define TILE_HEIGHT 32
+#define TILE_FIX    64
 
 enum {
 	kTagGameLayer = 0,
@@ -24,6 +25,11 @@ enum {
 };
 
 @implementation CoreFunctions
+
++(CGPoint) convertToISO:(CGPoint)pos
+{	
+	return ccp(pos.x, pos.y - 48);
+}
 
 +(NSMutableDictionary *) getTileInfo:(CGPoint)pos
 {	
@@ -78,11 +84,11 @@ enum {
 					
 					NSMutableDictionary *toReturn = [NSMutableDictionary dictionary];
 					[toReturn setObject:[NSValue valueWithCGPoint:ccp(x, y)] forKey:@"tileIndex"];
-					[toReturn setObject:[NSValue valueWithCGPoint:ccp(tp.x + TILE_WIDTH / 2, tp.y + TILE_HEIGHT / 2)] forKey:@"tilePos"];					
+					[toReturn setObject:[NSValue valueWithCGPoint:ccp(tp.x + TILE_WIDTH / 2, tp.y + TILE_HEIGHT / 2 - 16)] forKey:@"tilePos"];					
 					[toReturn setValue:[NSNumber numberWithInt:gid0] forKey:@"tileGID"];
 					[toReturn setValue:[NSNumber numberWithInt:gid1] forKey:@"tileGIDCollision"];
 					
-					//CCLOG(@"Click sul tile(%d, %d) == %d", (int)tp.x + TILE_WIDTH / 2, (int)tp.y + TILE_HEIGHT / 2, 0);
+					//CCLOG(@"Click sul tile(%d, %d) == %d", (int)tp.x + TILE_WIDTH / 2, (int)tp.y + TILE_HEIGHT / 2, gid0);
 					return toReturn;
 				}
 			}
@@ -132,6 +138,12 @@ enum {
 	
 	int i = (int)p1i.x;
 	int j = (int)p1i.y;
+	
+	// per correzione tile
+	BOOL extra = NO;
+	int inc = TILE_FIX;
+	//
+	
 	if (p1i.x < p2i.x)
 	{
 		while (i < p2i.x)
@@ -139,9 +151,10 @@ enum {
 			i++;
 			gid = [layerColl tileGIDAt:ccp(i, j)];
 			if (kTagTileBlock == gid) return actions; // cliccato su posizione nulla
-			temp = ccp(p1.x - (p1i.x - i) * TILE_WIDTH / 2, p1.y + (p1i.x - i) * TILE_HEIGHT / 2);
+			temp = ccp(p1.x - (p1i.x - i) * TILE_WIDTH / 2, p1.y + (p1i.x - i) * TILE_HEIGHT / 2 + inc);
 			id action = [MyMoveTo actionWithDuration:dur position:temp];
 			[actions addObject:action];
+			extra = YES;
 		}
 	} 
 	else
@@ -151,11 +164,16 @@ enum {
 			i--;
 			gid = [layerColl tileGIDAt:ccp(i, j)];
 			if (kTagTileBlock == gid) return actions; // cliccato su posizione nulla
-			temp = ccp(p1.x - (p1i.x - i) * TILE_WIDTH / 2, p1.y + (p1i.x - i) * TILE_HEIGHT / 2);
+			temp = ccp(p1.x - (p1i.x - i) * TILE_WIDTH / 2, p1.y + (p1i.x - i) * TILE_HEIGHT / 2 + inc);
 			id action = [MyMoveTo actionWithDuration:dur position:temp];
 			[actions addObject:action];
+			extra = YES;
 		}
 	}
+	
+	if (extra)
+		inc = 0;
+	
 	if (p1i.y < p2i.y)
 	{
 		while (j < p2i.y)
@@ -163,7 +181,7 @@ enum {
 			j++;
 			gid = [layerColl tileGIDAt:ccp(i, j)];
 			if (kTagTileBlock == gid) return actions; // cliccato su posizione nulla
-			id action = [MyMoveTo actionWithDuration:dur position:ccp(temp.x + (p1i.y - j) * TILE_WIDTH / 2, temp.y + (p1i.y - j) * TILE_HEIGHT / 2)];
+			id action = [MyMoveTo actionWithDuration:dur position:ccp(temp.x + (p1i.y - j) * TILE_WIDTH / 2, temp.y + (p1i.y - j) * TILE_HEIGHT / 2 + inc)];
 			[actions addObject:action];
 		}
 	} 
@@ -174,7 +192,7 @@ enum {
 			j--;
 			gid = [layerColl tileGIDAt:ccp(i, j)];
 			if (kTagTileBlock == gid) return actions; // cliccato su posizione nulla
-			id action = [MyMoveTo actionWithDuration:dur position:ccp(temp.x + (p1i.y - j) * TILE_WIDTH / 2, temp.y + (p1i.y - j) * TILE_HEIGHT / 2)];
+			id action = [MyMoveTo actionWithDuration:dur position:ccp(temp.x + (p1i.y - j) * TILE_WIDTH / 2, temp.y + (p1i.y - j) * TILE_HEIGHT / 2 + inc)];
 			[actions addObject:action];
 		}
 	}
