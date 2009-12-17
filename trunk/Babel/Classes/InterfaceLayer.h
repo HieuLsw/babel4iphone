@@ -1,5 +1,5 @@
 //
-//  MenuLayer.h
+//  InterfaceLayer.h
 //  Genoma
 //
 //  Created by Giovanni Amati on 24/11/09.
@@ -8,7 +8,7 @@
 
 #import "cocos2d.h"
 
-@interface MenuLayer : CCLayer
+@interface InterfaceLayer : CCLayer
 {
 
 }

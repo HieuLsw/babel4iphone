@@ -8,12 +8,12 @@
 
 #import "BabelAppDelegate.h"
 #import "cocos2d.h"
-#import "MenuLayer.h"
+#import "InterfaceLayer.h"
 #import "GameLayer.h"
 
 enum {
 	kTagGameLayer = 0,
-	kTagMenuLayer = 1,
+	kTagInterfaceLayer = 1,
 };
 
 @implementation BabelAppDelegate
@@ -60,11 +60,11 @@ enum {
 	CCScene *scene = [CCScene node];
 	
 	GameLayer *glayer = [GameLayer node];
-	[glayer loadWithMap:1 playerPos:ccp(96, 16)]; //ccp(700, 700)];      //ccp(96, 16)];
-	MenuLayer *mlayer = [MenuLayer node];
+	[glayer loadWithMap:1 playerPos:ccp(160, 128)]; //ccp(700, 700)];      //ccp(96, 16)];
+	InterfaceLayer *mlayer = [InterfaceLayer node];
 	
 	[scene addChild:glayer z:0 tag:kTagGameLayer]; // 0 tag del game layer
-	[scene addChild:mlayer z:1 tag:kTagMenuLayer]; // 1 tag del menu layer
+	[scene addChild:mlayer z:1 tag:kTagInterfaceLayer]; // 1 tag del menu layer
 	
 	[[CCDirector sharedDirector] runWithScene: scene];
 }

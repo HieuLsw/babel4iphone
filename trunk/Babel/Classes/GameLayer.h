@@ -10,16 +10,18 @@
 #import "CoreFunctions.h"
 #import "MySequence.h"
 
-#import "MenuLayer.h"
+#import "InterfaceLayer.h"
 
 @interface GameLayer : CCLayer
 {
 	int mapIndex;
 	int playerSel;
+	NSMutableArray *players;
 }
 
 @property (readwrite) int mapIndex;
 @property (readwrite) int playerSel;
+@property (nonatomic, readwrite, retain) NSMutableArray *players;
 
 -(void) loadWithMap:(int)map playerPos:(CGPoint)pos;
 -(void) nextScene:(CGPoint)pos;

@@ -189,7 +189,7 @@
 		887E47B310C6EA9500F260C8 /* CCFileUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47B210C6EA9500F260C8 /* CCFileUtils.m */; };
 		887E47FA10C6EB9E00F260C8 /* CoreFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F110C6EB9E00F260C8 /* CoreFunctions.m */; };
 		887E47FB10C6EB9E00F260C8 /* GameLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F310C6EB9E00F260C8 /* GameLayer.m */; };
-		887E47FC10C6EB9E00F260C8 /* MenuLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F510C6EB9E00F260C8 /* MenuLayer.m */; };
+		887E47FC10C6EB9E00F260C8 /* InterfaceLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F510C6EB9E00F260C8 /* InterfaceLayer.m */; };
 		887E47FD10C6EB9E00F260C8 /* MyMoveTo.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F710C6EB9E00F260C8 /* MyMoveTo.m */; };
 		887E47FE10C6EB9E00F260C8 /* MySequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F910C6EB9E00F260C8 /* MySequence.m */; };
 		887E481D10C6ECC100F260C8 /* Exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 887E481310C6ECC100F260C8 /* Exit.png */; };
@@ -202,6 +202,7 @@
 		887E482410C6ECC100F260C8 /* orthogonal-test1.tmx in Resources */ = {isa = PBXBuildFile; fileRef = 887E481A10C6ECC100F260C8 /* orthogonal-test1.tmx */; };
 		887E482510C6ECC100F260C8 /* orthogonal-test2.tmx in Resources */ = {isa = PBXBuildFile; fileRef = 887E481B10C6ECC100F260C8 /* orthogonal-test2.tmx */; };
 		887E482610C6ECC100F260C8 /* selezione.png in Resources */ = {isa = PBXBuildFile; fileRef = 887E481C10C6ECC100F260C8 /* selezione.png */; };
+		88AA119210D6C8C20066B393 /* tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 88AA119110D6C8C20066B393 /* tile.png */; };
 		DC6640030F83B3EA000B3E49 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC6640020F83B3EA000B3E49 /* AudioToolbox.framework */; };
 		DC6640050F83B3EA000B3E49 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC6640040F83B3EA000B3E49 /* OpenAL.framework */; };
 		DCCBF1B70F6022AE0040855A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCBF1B60F6022AE0040855A /* CoreGraphics.framework */; };
@@ -406,8 +407,8 @@
 		887E47F110C6EB9E00F260C8 /* CoreFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreFunctions.m; sourceTree = "<group>"; };
 		887E47F210C6EB9E00F260C8 /* GameLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameLayer.h; sourceTree = "<group>"; };
 		887E47F310C6EB9E00F260C8 /* GameLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameLayer.m; sourceTree = "<group>"; };
-		887E47F410C6EB9E00F260C8 /* MenuLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuLayer.h; sourceTree = "<group>"; };
-		887E47F510C6EB9E00F260C8 /* MenuLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuLayer.m; sourceTree = "<group>"; };
+		887E47F410C6EB9E00F260C8 /* InterfaceLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterfaceLayer.h; sourceTree = "<group>"; };
+		887E47F510C6EB9E00F260C8 /* InterfaceLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterfaceLayer.m; sourceTree = "<group>"; };
 		887E47F610C6EB9E00F260C8 /* MyMoveTo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMoveTo.h; sourceTree = "<group>"; };
 		887E47F710C6EB9E00F260C8 /* MyMoveTo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyMoveTo.m; sourceTree = "<group>"; };
 		887E47F810C6EB9E00F260C8 /* MySequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MySequence.h; sourceTree = "<group>"; };
@@ -422,6 +423,7 @@
 		887E481A10C6ECC100F260C8 /* orthogonal-test1.tmx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "orthogonal-test1.tmx"; sourceTree = "<group>"; };
 		887E481B10C6ECC100F260C8 /* orthogonal-test2.tmx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "orthogonal-test2.tmx"; sourceTree = "<group>"; };
 		887E481C10C6ECC100F260C8 /* selezione.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selezione.png; sourceTree = "<group>"; };
+		88AA119110D6C8C20066B393 /* tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tile.png; sourceTree = "<group>"; };
 		DC6640020F83B3EA000B3E49 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DC6640040F83B3EA000B3E49 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		DCCBF1B60F6022AE0040855A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -522,8 +524,8 @@
 				887E47F110C6EB9E00F260C8 /* CoreFunctions.m */,
 				887E47F210C6EB9E00F260C8 /* GameLayer.h */,
 				887E47F310C6EB9E00F260C8 /* GameLayer.m */,
-				887E47F410C6EB9E00F260C8 /* MenuLayer.h */,
-				887E47F510C6EB9E00F260C8 /* MenuLayer.m */,
+				887E47F410C6EB9E00F260C8 /* InterfaceLayer.h */,
+				887E47F510C6EB9E00F260C8 /* InterfaceLayer.m */,
 				887E47F610C6EB9E00F260C8 /* MyMoveTo.h */,
 				887E47F710C6EB9E00F260C8 /* MyMoveTo.m */,
 				887E47F810C6EB9E00F260C8 /* MySequence.h */,
@@ -779,6 +781,7 @@
 		50F414EB1069373D002A0D5E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				88AA119110D6C8C20066B393 /* tile.png */,
 				887E481310C6ECC100F260C8 /* Exit.png */,
 				887E481410C6ECC100F260C8 /* grossini_dance_atlas.png */,
 				887E481510C6ECC100F260C8 /* Immagine.png */,
@@ -968,6 +971,7 @@
 				887E482410C6ECC100F260C8 /* orthogonal-test1.tmx in Resources */,
 				887E482510C6ECC100F260C8 /* orthogonal-test2.tmx in Resources */,
 				887E482610C6ECC100F260C8 /* selezione.png in Resources */,
+				88AA119210D6C8C20066B393 /* tile.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -983,7 +987,7 @@
 				887E47B310C6EA9500F260C8 /* CCFileUtils.m in Sources */,
 				887E47FA10C6EB9E00F260C8 /* CoreFunctions.m in Sources */,
 				887E47FB10C6EB9E00F260C8 /* GameLayer.m in Sources */,
-				887E47FC10C6EB9E00F260C8 /* MenuLayer.m in Sources */,
+				887E47FC10C6EB9E00F260C8 /* InterfaceLayer.m in Sources */,
 				887E47FD10C6EB9E00F260C8 /* MyMoveTo.m in Sources */,
 				887E47FE10C6EB9E00F260C8 /* MySequence.m in Sources */,
 			);

@@ -1,14 +1,14 @@
 //
-//  MenuLayer.m
+//  InterfaceLayer.m
 //  Genoma
 //
 //  Created by Giovanni Amati on 24/11/09.
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "MenuLayer.h"
+#import "InterfaceLayer.h"
 
-@implementation MenuLayer
+@implementation InterfaceLayer
 
 -(id) init
 {
