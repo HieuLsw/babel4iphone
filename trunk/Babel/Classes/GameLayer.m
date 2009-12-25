@@ -39,6 +39,10 @@ enum {
 	
 	// LOAD MAP
 	
+	//CCSprite *back = [CCSprite spriteWithFile:@"Default2.png"];
+	//[back setAnchorPoint:ccp(0, 0)];
+	//[self addChild:back z:-1];
+	
 	// usare indici x caricare map diverse
 	NSString *file = [[@"level" stringByAppendingString:[NSString stringWithFormat:@"%d", mapIndex]] stringByAppendingString:@".tmx"];
 	CCTMXTiledMap *tileMap = [CCTMXTiledMap tiledMapWithTMXFile:file];
@@ -93,8 +97,8 @@ enum {
 	float y = pos.y + s.height / 4 - 64; // fix spostamento dalla tile lunga
 	float z = s.height / 1.1566f;
 	
-	[self.camera setCenterX:x centerY:y centerZ:0]; // serve il self
-	[self.camera setEyeX:x eyeY:y eyeZ:z];
+	//[self.camera setCenterX:x centerY:y centerZ:0]; // serve il self
+	//[self.camera setEyeX:x eyeY:y eyeZ:z];
 }
 
 -(void) nextScene:(CGPoint)pos

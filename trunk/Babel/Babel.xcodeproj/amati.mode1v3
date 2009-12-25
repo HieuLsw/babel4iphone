@@ -271,7 +271,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>10</integer>
+									<integer>8</integer>
 									<integer>4</integer>
 									<integer>0</integer>
 								</array>
@@ -314,7 +314,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>InterfaceLayer.m</string>
+								<string>GameLayer.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -322,11 +322,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>InterfaceLayer.m</string>
+										<string>GameLayer.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>88D64D5D10E545390093396B</string>
+										<string>88D64EF810E56AE50093396B</string>
 										<key>history</key>
 										<array>
 											<string>887E47C510C6EAC600F260C8</string>
@@ -335,31 +335,33 @@
 											<string>887E480410C6EC7400F260C8</string>
 											<string>880F6DBF10C6FC95004B0271</string>
 											<string>88BECB7410CC2BA0000F4180</string>
-											<string>88BECB7710CC2BA0000F4180</string>
 											<string>88BECB7910CC2BA0000F4180</string>
 											<string>88C9D0BB10D80BB200575554</string>
 											<string>88C26A1D10DAEEE100099ADF</string>
 											<string>88C26A1E10DAEEE100099ADF</string>
-											<string>88C26A1F10DAEEE100099ADF</string>
 											<string>88C26A2010DAEEE100099ADF</string>
 											<string>88C26A2110DAEEE100099ADF</string>
 											<string>88C26A2310DAEEE100099ADF</string>
 											<string>88C26A2410DAEEE100099ADF</string>
 											<string>88C26A2510DAEEE100099ADF</string>
 											<string>88C26A2610DAEEE100099ADF</string>
-											<string>88C26A2710DAEEE100099ADF</string>
-											<string>8800DEC110E43EDB005BE091</string>
 											<string>88D64B9510E508CC0093396B</string>
 											<string>88D64B9610E508CC0093396B</string>
-											<string>88D64B9710E508CC0093396B</string>
-											<string>88D64C1D10E5176A0093396B</string>
 											<string>88D64C1E10E5176A0093396B</string>
 											<string>88D64CB010E533D90093396B</string>
-											<string>88D64CB110E533D90093396B</string>
 											<string>88D64CBC10E534B30093396B</string>
-											<string>88D64D4010E541D10093396B</string>
-											<string>88D64D4510E542A10093396B</string>
-											<string>88D64D4610E542A10093396B</string>
+											<string>88D64E0210E5579F0093396B</string>
+											<string>88D64E0310E5579F0093396B</string>
+											<string>88D64E0410E5579F0093396B</string>
+											<string>88D64E0510E5579F0093396B</string>
+											<string>88D64E8910E5633D0093396B</string>
+											<string>88D64E8B10E5633D0093396B</string>
+											<string>88D64E8C10E5633D0093396B</string>
+											<string>88D64E8D10E5633D0093396B</string>
+											<string>88D64E8E10E5633D0093396B</string>
+											<string>88D64E8F10E5633D0093396B</string>
+											<string>88D64EF410E56AC40093396B</string>
+											<string>88D64EF510E56AC40093396B</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -559,8 +561,8 @@
 	<array>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>887E47A910C6EA4900F260C8</string>
-		<string>/Users/amati/Code/babel4iphone/Babel/Babel.xcodeproj</string>
 		<string>1C78EAAD065D492600B07095</string>
+		<string>/Users/amati/Code/babel4iphone/Babel/Babel.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>0 59 1440 819 0 0 1440 878 </string>
