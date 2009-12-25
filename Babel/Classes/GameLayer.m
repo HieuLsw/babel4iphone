@@ -48,7 +48,7 @@ enum {
 		[[child texture] setAntiAliasTexParameters];
 	
 	[tileMap reorderChild:[tileMap layerNamed:@"Layer 0"] z:1];
-	[tileMap reorderChild:[tileMap layerNamed:@"Layer 1"] z:2]; // mettere a 3 e player 2
+	[tileMap reorderChild:[tileMap layerNamed:@"Layer coll"] z:0]; // livello delle collisioni, nel fondo
 	
 	// LOAD SPRITE
 		
@@ -90,7 +90,7 @@ enum {
 	// visto che i calcoli partono dalla posizione del pg ci sono calcoli da fare per il posizionamento giusto della telecamera
 	CGSize s = [[CCDirector sharedDirector] displaySize];
 	float x = pos.x - s.width / 4; // camera pos standard relative to start pos player
-	float y = pos.y + s.height / 4;
+	float y = pos.y + s.height / 4 - 64; // fix spostamento dalla tile lunga
 	float z = s.height / 1.1566f;
 	
 	[self.camera setCenterX:x centerY:y centerZ:0]; // serve il self
@@ -119,7 +119,7 @@ enum {
 {
 	CCTMXTiledMap *tilemap = (CCTMXTiledMap *)[self getChildByTag:kTagTileMap]; // tag 1
 	
-	NSMutableDictionary *dest = [CoreFunctions getTileInfo:[CoreFunctions convertToISO:ccp(pos.x, pos.y)]];
+	NSMutableDictionary *dest = [CoreFunctions getTileInfo:pos];
 	CGPoint destIndex;
     [[dest objectForKey:@"tileIndex"] getValue:&destIndex];
 	
@@ -136,7 +136,7 @@ enum {
 	CCSpriteSheet *mgr_player = (CCSpriteSheet *)[tilemap getChildByTag:kTagPlayer]; // tag 2
 	CGPoint plpos = mgr_player.position;
 	
-	NSMutableDictionary *source = [CoreFunctions getTileInfo:[CoreFunctions convertToISO:ccp(plpos.x, plpos.y)]];
+	NSMutableDictionary *source = [CoreFunctions getTileInfo:plpos];
 	CGPoint sourceIndex;
     [[source objectForKey:@"tileIndex"] getValue:&sourceIndex];
 	
@@ -179,7 +179,7 @@ enum {
 	}
 }
 
--(BOOL) ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+-(BOOL) ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	UITouch *touch = [touches anyObject];
 	
