@@ -10,7 +10,14 @@
 
 @interface InterfaceLayer : CCLayer
 {
-
+	int sel;
+	int num;
 }
+
+@property (readwrite) int sel;
+@property (readwrite) int num;
+
+-(void) initMenu:(NSArray *)labels;
+-(void) configMenu:(int)i move:(int)m;
 
 @end

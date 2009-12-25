@@ -64,7 +64,7 @@ enum {
 	InterfaceLayer *mlayer = [InterfaceLayer node];
 	
 	[scene addChild:glayer z:0 tag:kTagGameLayer]; // 0 tag del game layer
-	[scene addChild:mlayer z:1 tag:kTagInterfaceLayer]; // 1 tag del menu layer
+	[scene addChild:mlayer z:1 tag:kTagInterfaceLayer]; // 1 tag del menu/dialog/map/ui layer
 	
 	[[CCDirector sharedDirector] runWithScene: scene];
 }
