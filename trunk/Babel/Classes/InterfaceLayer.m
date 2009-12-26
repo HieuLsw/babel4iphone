@@ -8,7 +8,7 @@
 
 #import "InterfaceLayer.h"
 
-#define MOVE 24
+#define MOVE 20
 
 @implementation InterfaceLayer
 
@@ -61,25 +61,21 @@
 	for (int i = 0; i < num; i++) // clean
 		[self removeChildByTag:i cleanup:TRUE];
 	
-	NSString *aFont = @"Schwarzwald Regular";
+	//NSString *aFont = @"Schwarzwald Regular";
+	//NSString *aFont = @"forgotte";
+	NSString *aFont = @"Lucon1";
 	sel = 2;
 	num = 0;
 	
-	int y = 16;
+	int y = 10;
 	for (NSString *myStr in labels)
 	{
-		CCLabel *it = [CCLabel labelWithString:myStr dimensions:CGSizeMake(100, 28) alignment:UITextAlignmentLeft fontName:aFont fontSize:18];
+		CCLabel *it = [CCLabel labelWithString:myStr dimensions:CGSizeMake(100, 28) alignment:UITextAlignmentLeft fontName:aFont fontSize:14];
 		it.position = ccp(65, y);
 		y += MOVE;
 		[self addChild:it z:0 tag:num];
 		[self configMenu:num move:0];
 		num += 1;
-	}
-	
-	for (int i = 0; i <= num / 2; i++)
-	{
-		CCLOG(@"-----------> %d", i);
-		//[self downCallback:NULL];
 	}
 }
 
@@ -130,7 +126,13 @@
 	CCLOG(@"-----------> %d", sel);
 	if (sel == 5)
 	{
-		NSArray *labels2 = [NSArray arrayWithObjects:@"Black 50", @"Earth 40", @"Wind 15", @"Blizard 20", @"Fire 40", nil];
+		NSArray *labels2 = [NSArray arrayWithObjects:
+							@"Black    50", 
+							@"Earth    40", 
+							@"Wind     15", 
+							@"Blizard  20", 
+							@"Fire     40", 
+							nil];
 		[self initMenu:labels2];
 	}
 }
