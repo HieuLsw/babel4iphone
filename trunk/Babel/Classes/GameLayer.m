@@ -39,9 +39,11 @@ enum {
 	
 	// LOAD MAP
 	
-	//CCSprite *back = [CCSprite spriteWithFile:@"Default2.png"];
-	//[back setAnchorPoint:ccp(0, 0)];
-	//[self addChild:back z:-1];
+	CCSprite *back = [CCSprite spriteWithFile:@"Default2.png"];
+	[back setAnchorPoint:ccp(0, 0)];
+	[self addChild:back z:-1];
+	
+	return;
 	
 	// usare indici x caricare map diverse
 	NSString *file = [[@"level" stringByAppendingString:[NSString stringWithFormat:@"%d", mapIndex]] stringByAppendingString:@".tmx"];
