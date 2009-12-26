@@ -16,12 +16,10 @@
 {
 	int mapIndex;
 	int playerSel;
-	NSMutableArray *players;
 }
 
-@property (readwrite) int mapIndex;
-@property (readwrite) int playerSel;
-@property (nonatomic, readwrite, retain) NSMutableArray *players;
+@property (readwrite, assign) int mapIndex;
+@property (readwrite, assign) int playerSel;
 
 -(void) loadWithMap:(int)map playerPos:(CGPoint)pos;
 -(void) nextScene:(CGPoint)pos;

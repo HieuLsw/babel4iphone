@@ -7,12 +7,13 @@
 //
 
 #import "InterfaceLayer.h"
+#import "SharedData.h"
 
 #define MOVE 20
 
 @implementation InterfaceLayer
 
-@synthesize sel, num;
+@synthesize menu, sel, num;
 
 -(id) init
 {
@@ -20,60 +21,56 @@
 	// Apple recommends to re-assign "self" with the "super" return value
 	if ((self = [super init]))
 	{
-		CCSprite *back = [CCSprite spriteWithFile:@"back.png"];
-		[back setOpacity:100];
-		[back setAnchorPoint:CGPointZero];
-		[self addChild:back];
+		CCSprite *backmenu = [CCSprite spriteWithFile:@"back.png"];
+		[backmenu setOpacity:100];
+		[backmenu setAnchorPoint:CGPointZero];
 		
-		CCMenuItemImage *item1 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(downCallback:)];
-		CCMenuItemImage *item2 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(upCallback:)];
+		CCMenuItemImage *item1 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(upCallback:)];
+		CCMenuItemImage *item2 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(downCallback:)];
 		CCMenuItemImage *item3 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(leftCallback:)];
 		CCMenuItemImage *item4 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(rightCallback:)];		
-		
-		CCMenu *menu = [CCMenu menuWithItems:item1, item2, item3, item4, nil];
-		
-		[item1 setOpacity:50];
+				
 		[item1 setRotation:-90];
-		[item2 setOpacity:50];
 		[item2 setRotation:90];
-		[item3 setOpacity:50];
 		[item3 setRotation:-180];
-		[item4 setOpacity:50];
-		
 		[item1 setPosition:ccp(402, 80)];
 		[item2 setPosition:ccp(402, 30)];
 		[item3 setPosition:ccp(357, 55)];
 		[item4 setPosition:ccp(447, 55)];
-		[self addChild:menu z:1];
 		
-		[menu setPosition:CGPointZero];
+		CCMenu *controller = [CCMenu menuWithItems:item1, item2, item3, item4, nil];
+		[controller setOpacity:100];
+		[controller setPosition:CGPointZero];
 		
-		// sara' dinamico
-		NSArray *labels1 = [NSArray arrayWithObjects:@"Exit", @"Settings", @"Items", @"Team", @"Invocations", @"Magics", @"Attack", nil];
-		[self initMenu:labels1];
+		[self addChild:backmenu z:0];
+		[self addChild:controller z:0];
+		
+		[self initMenu:@"mainMenu"];
 	}
 	
 	return self;
 }
 
--(void) initMenu:(NSArray *)labels
+-(void) initMenu:(NSString *)name
 {
+	menu = name;
+	
 	for (int i = 0; i < num; i++) // clean
 		[self removeChildByTag:i cleanup:TRUE];
 	
-	//NSString *aFont = @"Schwarzwald Regular";
-	//NSString *aFont = @"forgotte";
 	NSString *aFont = @"Lucon1";
-	sel = 2;
+	sel = 0;
 	num = 0;
 	
-	int y = 10;
-	for (NSString *myStr in labels)
+	NSMutableArray *menuitems = [[SharedData Initialize] getMenu:name player:0];
+	
+	int y = 50;
+	for (NSString *str in menuitems)
 	{
-		CCLabel *it = [CCLabel labelWithString:myStr dimensions:CGSizeMake(100, 28) alignment:UITextAlignmentLeft fontName:aFont fontSize:14];
-		it.position = ccp(65, y);
-		y += MOVE;
-		[self addChild:it z:0 tag:num];
+		CCLabel *lb = [CCLabel labelWithString:str dimensions:CGSizeMake(120, 28) alignment:UITextAlignmentLeft fontName:aFont fontSize:14];
+		lb.position = ccp(70, y);
+		y -= MOVE;
+		[self addChild:lb z:1 tag:num];
 		[self configMenu:num move:0];
 		num += 1;
 	}
@@ -81,19 +78,19 @@
 
 -(void) configMenu:(int)i move:(int)m
 {
-	CCLabel *it = (CCLabel *)[self getChildByTag:i];
+	CCLabel *lb = (CCLabel *)[self getChildByTag:i];
 	
-	[it runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(it.position.x, it.position.y + m)]];
+	[lb runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(lb.position.x, lb.position.y + m)]];
 	//it.position = ccp(it.position.x, it.position.y + m);
 	
 	if (sel == i)
-		[it setOpacity:200];
+		[lb setOpacity:200];
 	else if ((sel - 1 == i) || (sel + 1 == i))
-		[it setOpacity:100];
+		[lb setOpacity:100];
 	else if ((sel - 2 == i) || (sel + 2 == i))
-		[it setOpacity:50];
+		[lb setOpacity:50];
 	else
-		[it setOpacity:0];
+		[lb setOpacity:0];
 }
 
 -(void) upCallback:(id)sender
@@ -102,7 +99,7 @@
 	{
 		sel -= 1;
 		for (int i = 0; i < num; i++)
-			[self configMenu:i move:MOVE];
+			[self configMenu:i move:-MOVE];
 	}
 }
 
@@ -112,29 +109,24 @@
 	{
 		sel += 1;
 		for (int i = 0; i < num; i++)
-			[self configMenu:i move:-MOVE];
+			[self configMenu:i move:MOVE];
 	}
 }
 
 -(void) leftCallback:(id)sender
 {
-	CCLOG(@"-----------> %d", sel);
+	[self initMenu:@"mainMenu"];
 }
 
 -(void) rightCallback:(id)sender
 {
-	CCLOG(@"-----------> %d", sel);
-	if (sel == 5)
-	{
-		NSArray *labels2 = [NSArray arrayWithObjects:
-							@"Black    50", 
-							@"Earth    40", 
-							@"Wind     15", 
-							@"Blizard  20", 
-							@"Fire     40", 
-							nil];
-		[self initMenu:labels2];
-	}
+	NSMutableArray *menuitems = [[SharedData Initialize] getMenu:menu player:0];
+	NSString *name = [menuitems objectAtIndex:sel];
+	
+	CCLOG(@"------------> %s", [name UTF8String]);
+	
+	if (@"Magics" == name)
+		[self initMenu:@"magicsMenu"];
 }
 
 // on "dealloc" you need to release all your retained objects
