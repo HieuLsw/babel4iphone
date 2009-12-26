@@ -23,22 +23,24 @@
 -(void) initGame
 {
 	self.mainMenu = [NSMutableArray array];
+	self.magicsMenu = [NSMutableArray array];
+	
+	// insert main menu
 	[self.mainMenu addObject:@"Attack"];
 	[self.mainMenu addObject:@"Magics"];
 	[self.mainMenu addObject:@"Invocations"];
 	[self.mainMenu addObject:@"Items"];
 	[self.mainMenu addObject:@"Team"];
 	[self.mainMenu addObject:@"Settings"];
-		
-	NSMutableArray *p0 = [NSMutableArray array];
-	[p0 addObject:@"Fire      25"];
-	[p0 addObject:@"Wind      25"];
-	[p0 addObject:@"Water     25"];
-	[p0 addObject:@"Blizard   25"];
-	[p0 addObject:@"Earth     25"];
 	
-	self.magicsMenu = [NSMutableArray array];
-	[self.magicsMenu insertObject:p0 atIndex:0];
+	// dafaul player 1 magic
+	NSMutableArray *p0 = [NSMutableArray array];
+	[p0 addObject:@"Fire     25"];
+	[p0 addObject:@"Wind     25"];
+	[p0 addObject:@"Water    25"];
+	[p0 addObject:@"Blizard  25"];
+	[p0 addObject:@"Earth    25"];
+	[self.magicsMenu addObject:p0];
 }
 
 -(NSMutableArray *) getMenu:(NSString *)name player:(int)p

@@ -68,7 +68,7 @@
 	for (NSString *str in menuitems)
 	{
 		CCLabel *lb = [CCLabel labelWithString:str dimensions:CGSizeMake(120, 28) alignment:UITextAlignmentLeft fontName:aFont fontSize:14];
-		lb.position = ccp(70, y);
+		lb.position = ccp(72, y);
 		y -= MOVE;
 		[self addChild:lb z:1 tag:num];
 		[self configMenu:num move:0];
