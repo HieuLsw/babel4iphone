@@ -18,7 +18,7 @@ enum {
 
 @implementation GameLayer
 
-@synthesize mapIndex, playerSel, players;
+@synthesize mapIndex, playerSel;
 
 -(id) init
 {
@@ -92,10 +92,10 @@ enum {
 	
 	// x,y,z della camera sono al centro del display, mentre quelli della tilemap nel left-bottom (0,0 nn viene mai spostata)
 	// visto che i calcoli partono dalla posizione del pg ci sono calcoli da fare per il posizionamento giusto della telecamera
-	CGSize s = [[CCDirector sharedDirector] displaySize];
-	float x = pos.x - s.width / 4; // camera pos standard relative to start pos player
-	float y = pos.y + s.height / 4 - 64; // fix spostamento dalla tile lunga
-	float z = s.height / 1.1566f;
+	//CGSize s = [[CCDirector sharedDirector] displaySize];
+	//float x = pos.x - s.width / 4; // camera pos standard relative to start pos player
+	//float y = pos.y + s.height / 4 - 64; // fix spostamento dalla tile lunga
+	//float z = s.height / 1.1566f;
 	
 	//[self.camera setCenterX:x centerY:y centerZ:0]; // serve il self
 	//[self.camera setEyeX:x eyeY:y eyeZ:z];
@@ -235,7 +235,6 @@ enum {
 	// cocos2d will automatically release all the children (Label)
 	
 	// don't forget to call "super dealloc"
-	[players release];
 	[super dealloc];
 }
 

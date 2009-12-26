@@ -9,7 +9,7 @@
 #import "BabelAppDelegate.h"
 #import "cocos2d.h"
 #import "InterfaceLayer.h"
-#import "GameLayer.h"
+#import "GameLayer.h"s
 
 enum {
 	kTagGameLayer = 0,
@@ -55,12 +55,15 @@ enum {
 	// create an openGL view inside a window
 	[[CCDirector sharedDirector] attachInView:window];	
 	[window makeKeyAndVisible];		
-		
+	
+	// singleton data
+	[[SharedData Initialize] initGame];
+	
 	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
 	
 	GameLayer *glayer = [GameLayer node];
-	[glayer loadWithMap:1 playerPos:ccp(160, 128)]; //ccp(700, 700)];      //ccp(96, 16)];
+	[glayer loadWithMap:1 playerPos:ccp(160, 128)]; //ccp(700, 700)];      //ccp(160, 128)];
 	InterfaceLayer *mlayer = [InterfaceLayer node];
 	
 	[scene addChild:glayer z:0 tag:kTagGameLayer]; // 0 tag del game layer
@@ -88,6 +91,7 @@ enum {
 -(void) applicationWillTerminate:(UIApplication *)application
 {
 	[[CCDirector sharedDirector] end];
+	[self release];
 }
 
 -(void) applicationSignificantTimeChange:(UIApplication *)application
@@ -98,6 +102,7 @@ enum {
 -(void) dealloc
 {
 	[[CCDirector sharedDirector] release];
+	[[SharedData Initialize] release];
 	[window release];
 	[super dealloc];
 }
