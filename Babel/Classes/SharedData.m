@@ -7,25 +7,25 @@
 //
 
 #import "SharedData.h"
+#import "PlayerData.h"
 
 @implementation SharedData
 
-@synthesize mainMenu, magicsMenu;
+@synthesize mainMenu, playerList, playerSel;
 
 -(void) dealloc
 {
 	NSLog(@"------------------- RELEASE SINGETON DATA ----------------------");
 	[mainMenu release];
-	[magicsMenu release];
+	[playerList release];
 	[super dealloc];
 }
 
 -(void) initGame
 {
-	self.mainMenu = [NSMutableArray array];
-	self.magicsMenu = [NSMutableArray array];
+	self.playerSel = 0;
 	
-	// insert main menu
+	self.mainMenu = [NSMutableArray array];
 	[self.mainMenu addObject:@"Attack"];
 	[self.mainMenu addObject:@"Magics"];
 	[self.mainMenu addObject:@"Invocations"];
@@ -33,24 +33,25 @@
 	[self.mainMenu addObject:@"Team"];
 	[self.mainMenu addObject:@"Settings"];
 	
-	// dafaul player 1 magic
-	NSMutableArray *p0 = [NSMutableArray array];
-	[p0 addObject:@"Fire     25"];
-	[p0 addObject:@"Wind     25"];
-	[p0 addObject:@"Water    25"];
-	[p0 addObject:@"Blizard  25"];
-	[p0 addObject:@"Earth    25"];
-	[self.magicsMenu addObject:p0];
+	// deve essere fatta dalla sorgente
+	self.playerList = [NSMutableArray array];
+	[self.playerList addObject:[[[PlayerData alloc] initWithName:@"Vito"] autorelease]];
+	[self.playerList addObject:[[[PlayerData alloc] initWithName:@"Gino"] autorelease]];
 }
 
--(NSMutableArray *) getMenu:(NSString *)name player:(int)p
+-(NSMutableArray *) getMenu:(NSString *)name
 {
-	if (@"mainMenu" == name)
+	if (@"Main" == name)
 		return self.mainMenu;
-	else if (@"magicsMenu" == name)
-		return [self.magicsMenu objectAtIndex:p];
+	else if (@"Magics" == name)
+		return [[self.playerList objectAtIndex:self.playerSel] getMagicMenu];
 	else
 		return NULL;
+}
+
+-(void) nextTurn
+{
+	self.playerSel = (self.playerSel + 1) % [self.playerList count];
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////

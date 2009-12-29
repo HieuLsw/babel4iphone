@@ -9,14 +9,17 @@
 @interface SharedData : NSObject
 {
 	NSMutableArray *mainMenu;
-	NSMutableArray *magicsMenu;
+	NSMutableArray *playerList;
+	int playerSel;
 }
 
 @property (nonatomic, retain) NSMutableArray *mainMenu;
-@property (nonatomic, retain) NSMutableArray *magicsMenu;
+@property (nonatomic, retain) NSMutableArray *playerList;
+@property (readwrite, assign) int playerSel;
 
 -(void) initGame;
--(NSMutableArray *) getMenu:(NSString *)name player:(int)p;
+-(NSMutableArray *) getMenu:(NSString *)name;
+-(void) nextTurn;
 
 +(SharedData *) Initialize;
 
