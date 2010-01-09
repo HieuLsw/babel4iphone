@@ -9,36 +9,48 @@
 #import "InterfaceLayer.h"
 #import "SharedData.h"
 
-#define SHIFT 10000
+#define SHIFT 10000 // shifta i tag degli item dei menu da 10000 in poi
 #define MOVE 20
 
 @implementation MyAction
 
-@synthesize type;
+@synthesize myType;
 
 -(void) update:(ccTime)t
 {
-	if (@"menu" == [self type])
+	if (@"menu" == [self myType])
 	{
 		id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 		[layer initMenu:@"Main"];
+	}
+	else if (@"npc" == [self myType])
+	{
+		[[SharedData Initialize] generateAction];
+		[[SharedData Initialize] nextTurn];
 	}
 }
 
 +(id) showMenu
 {
 	id temp = [self actionWithDuration:0.0];
-	[temp setType:@"menu"];
+	[temp setMyType:@"menu"];
+	return temp;
+}
+
++(id) npc
+{
+	id temp = [self actionWithDuration:0.0];
+	[temp setMyType:@"npc"];
 	return temp;
 }
 
 @end
 
-// fine action utils
+// fine classe utils
 
 @implementation InterfaceLayer
 
-@synthesize menu, sel, num;
+@synthesize menu, sel, num, active;
 
 -(id) init
 {
@@ -46,6 +58,8 @@
 	// Apple recommends to re-assign "self" with the "super" return value
 	if ((self = [super init]))
 	{
+		active = NO;
+		
 		CCSprite *backmenu = [CCSprite spriteWithFile:@"back.png"];
 		[backmenu setOpacity:100];
 		[backmenu setPosition:CGPointZero];
@@ -70,16 +84,15 @@
 		[controller setPosition:CGPointZero];
 		
 		CGSize s = [[CCDirector sharedDirector] winSize];
-		NSString *name = [[[[SharedData Initialize] getPlayer:-1] name] stringByAppendingString:@" is ready!!!"];
-		CCLabel *label = [CCLabel labelWithString:name dimensions:CGSizeMake(s.width, 28) alignment:UITextAlignmentCenter fontName:@"Lucon1" fontSize:24];
-		[label setPosition:ccp(s.width/2, s.height/2)];
-		[label setOpacity:0];
+		CCLabel *lturn = [CCLabel labelWithString:@"" dimensions:CGSizeMake(s.width, 44) alignment:UITextAlignmentCenter fontName:@"sr" fontSize:34];
+		[lturn setPosition:ccp(s.width/2, s.height/2)];
+		[lturn setOpacity:0];
 		
 		[self addChild:backmenu z:0  tag:0];
-		[self addChild:controller z:0];
-		[self addChild:label z:0 tag:1];
+		[self addChild:controller z:0 tag:2];
+		[self addChild:lturn z:0 tag:1];
 		
-		[label runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], [MyAction showMenu], nil]];
+		[self getTurn];
 	}
 	
 	return self;
@@ -97,6 +110,8 @@
 	
 	if (NULL == menuitems) // se null e' un'azione
 	{
+		active = NO;
+		
 		[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 0)]];
 		
 		// fare azione
@@ -121,6 +136,7 @@
 			[self configItem:num + SHIFT move:0];
 			num += 1;
 		}
+		active = YES;
 	}
 }
 
@@ -139,43 +155,57 @@
 		[lb setOpacity:0];
 }
 
--(void) showTurn:(NSString *)name
+-(void) getTurn
 {
 	CCLabel *lb = (CCLabel *)[self getChildByTag:1];
-	[lb setString:[name stringByAppendingString:@" is ready!!!"]];
-	[lb runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], [MyAction showMenu], nil]];
+	id p = [[SharedData Initialize] getPlayer:-1];
+	[lb setString:[[p name] stringByAppendingString:@" is ready!!!"]];
+	if (@"NPC" != [p type])
+		[lb runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], [MyAction showMenu], nil]];
+	else
+		[lb runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], [MyAction npc], nil]];
 }
 
 -(void) upCallback:(id)sender
 {
-	if (sel > 0)
+	if (active)
 	{
-		sel -= 1;
-		for (int i = 0 + SHIFT; i < num + SHIFT; i++)
-			[self configItem:i move:-MOVE];
+		if (sel > 0)
+		{
+			sel -= 1;
+			for (int i = 0 + SHIFT; i < num + SHIFT; i++)
+				[self configItem:i move:-MOVE];
+		}
 	}
 }
 
 -(void) downCallback:(id)sender
 {
-	if (sel < num - 1) // occhio qua!!!!!!!!! - 1
+	if (active)
 	{
-		sel += 1;
-		for (int i = 0 + SHIFT; i < num + SHIFT; i++)
-			[self configItem:i move:MOVE];
+		if (sel < num - 1) // occhio qua!!!!!!!!! - 1
+		{
+			sel += 1;
+			for (int i = 0 + SHIFT; i < num + SHIFT; i++)
+				[self configItem:i move:MOVE];
+		}
 	}
 }
 
 -(void) leftCallback:(id)sender
 {
-	[self initMenu:@"Main"]; // sempre a 2 livelli main e un altro
+	if (active)
+		[self initMenu:@"Main"]; // sempre a 2 livelli main e un altro
 }
 
 -(void) rightCallback:(id)sender
 {
-	NSMutableArray *menuitems = [[SharedData Initialize] getMenu:menu];
-	NSString *name = [menuitems objectAtIndex:sel];
-	[self initMenu:name];
+	if (active)
+	{
+		NSMutableArray *menuitems = [[SharedData Initialize] getMenu:menu];
+		NSString *name = [menuitems objectAtIndex:sel];
+		[self initMenu:name];
+	}
 }
 
 // on "dealloc" you need to release all your retained objects

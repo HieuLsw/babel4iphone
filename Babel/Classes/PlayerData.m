@@ -10,15 +10,15 @@
 
 @implementation PlayerData
 
-@synthesize name;
+@synthesize name, type;
 
--(id) initWithName:(NSString *)name_id
+-(id) init
 {
 	// always call "super" init
 	// Apple recommends to re-assign "self" with the "super" return value
 	if ((self = [super init]))
 	{
-		self.name = name_id;
+		
 	}
 	
 	return self;
