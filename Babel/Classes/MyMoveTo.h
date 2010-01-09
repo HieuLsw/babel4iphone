@@ -7,8 +7,8 @@
 //
 
 #import "CCIntervalAction.h"
-#import "CCDirector.h"
-#import "CCCamera.h"
+//#import "CCDirector.h"
+//#import "CCCamera.h"
 #import "CGPointExtension.h"
 
 @interface MyMoveTo : CCMoveTo

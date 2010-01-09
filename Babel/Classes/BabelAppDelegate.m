@@ -8,13 +8,9 @@
 
 #import "BabelAppDelegate.h"
 #import "cocos2d.h"
+#import "GameLayer.h"
 #import "InterfaceLayer.h"
-#import "GameLayer.h"s
-
-enum {
-	kTagGameLayer = 0,
-	kTagInterfaceLayer = 1,
-};
+#import "SharedData.h"
 
 @implementation BabelAppDelegate
 
@@ -63,15 +59,13 @@ enum {
 	CCScene *scene = [CCScene node];
 	
 	GameLayer *glayer = [GameLayer node];
-	[glayer loadWithMap:1 playerPos:ccp(160, 128)]; //ccp(700, 700)];      //ccp(160, 128)];
-	InterfaceLayer *mlayer = [InterfaceLayer node];
+	[scene addChild:glayer z:0 tag:0];  // tag 0 del game layer
 	
-	[scene addChild:glayer z:0 tag:kTagGameLayer]; // 0 tag del game layer
-	[scene addChild:mlayer z:1 tag:kTagInterfaceLayer]; // 1 tag del menu/dialog/map/ui layer
+	InterfaceLayer *mlayer = [InterfaceLayer node];
+	[scene addChild:mlayer z:1 tag:1];  // tag 1 del menu/dialog/map/ui layer
 	
 	[[CCDirector sharedDirector] runWithScene: scene];
 }
-
 
 -(void) applicationWillResignActive:(UIApplication *)application
 {
