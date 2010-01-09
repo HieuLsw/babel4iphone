@@ -23,9 +23,7 @@
 }
 
 -(void) initGame
-{
-	self.playerSel = 0;
-	
+{	
 	self.mainMenu = [NSMutableArray array];
 	[self.mainMenu addObject:@"Attack"];
 	[self.mainMenu addObject:@"Defende"];
@@ -37,8 +35,22 @@
 	
 	// deve essere fatta dalla sorgente dati
 	self.playerList = [NSMutableArray array];
-	[self.playerList addObject:[[[PlayerData alloc] initWithName:@"Vito"] autorelease]];
-	[self.playerList addObject:[[[PlayerData alloc] initWithName:@"Gino"] autorelease]];
+	
+	id p1 = [[[PlayerData alloc] init] autorelease];
+	[p1 setName:@"Vito"];
+	[p1 setType:@"Human"];
+	id p2 = [[[PlayerData alloc] init] autorelease];
+	[p2 setName:@"Gino"];
+	[p2 setType:@"Human"];
+	id p3 = [[[PlayerData alloc] init] autorelease];
+	[p3 setName:@"Monter"];
+	[p3 setType:@"NPC"];
+	
+	[self.playerList addObject:p1];
+	[self.playerList addObject:p2];
+	[self.playerList addObject:p3];
+	
+	self.playerSel = arc4random() % [self.playerList count]; // x ora il turno comincia random
 }
 
 -(NSMutableArray *) getMenu:(NSString *)name
@@ -63,14 +75,19 @@
 	self.playerSel = (self.playerSel + 1) % [self.playerList count];
 	
 	id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
-	[layer showTurn:[[self getPlayer:-1] name]];
+	[layer getTurn];
 }
 
 -(void) addAction:(NSString *)name ofType:(NSString *)type toTarget:(int)target
 {
 	NSLog(@"----> Player: %s - %s action: %s", [[[self getPlayer:-1] name] UTF8String], [type UTF8String], [name UTF8String]);
-	id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:0];
-	[layer goAction];
+	// creare una lista di azioni da fare in gamelayer
+}
+
+-(void) generateAction
+{
+	NSLog(@"----> NPC: %s IA generate a action and target", [[[self getPlayer:-1] name] UTF8String]);
+	// creare una lista di azioni da fare in gamelayer
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
