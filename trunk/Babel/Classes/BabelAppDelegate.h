@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SharedData.h"
 
 @interface BabelAppDelegate : NSObject <UIApplicationDelegate>
 {

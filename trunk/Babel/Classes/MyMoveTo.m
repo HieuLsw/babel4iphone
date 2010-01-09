@@ -8,12 +8,6 @@
 
 #import "MyMoveTo.h"
 
-enum {
-	kTagGameLayer = 0,
-	kTagTileMap = 5,
-	kTagPlayerSel = 7,
-};
-
 @implementation MyMoveTo
 
 // override methods
@@ -24,10 +18,7 @@ enum {
 	float y = startPosition.y + delta.y * t;
 	[target setPosition:ccp(x, y)];
 	
-	id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:kTagGameLayer];
-	id tilemap = [layer getChildByTag:kTagTileMap];
-	id selection = [tilemap getChildByTag:kTagPlayerSel];
-	[selection setPosition:ccp(x, y)];
+	//id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:kTagGameLayer];
 	
 	// layer's camera follow taget
 	//CGSize s = [[CCDirector sharedDirector] displaySize];

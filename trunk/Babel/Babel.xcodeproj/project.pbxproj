@@ -194,7 +194,6 @@
 		887E47FB10C6EB9E00F260C8 /* GameLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F310C6EB9E00F260C8 /* GameLayer.m */; };
 		887E47FC10C6EB9E00F260C8 /* InterfaceLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F510C6EB9E00F260C8 /* InterfaceLayer.m */; };
 		887E47FD10C6EB9E00F260C8 /* MyMoveTo.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F710C6EB9E00F260C8 /* MyMoveTo.m */; };
-		887E47FE10C6EB9E00F260C8 /* MySequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F910C6EB9E00F260C8 /* MySequence.m */; };
 		887E481E10C6ECC100F260C8 /* grossini_dance_atlas.png in Resources */ = {isa = PBXBuildFile; fileRef = 887E481410C6ECC100F260C8 /* grossini_dance_atlas.png */; };
 		887E481F10C6ECC100F260C8 /* Immagine.png in Resources */ = {isa = PBXBuildFile; fileRef = 887E481510C6ECC100F260C8 /* Immagine.png */; };
 		887E482010C6ECC100F260C8 /* iso-test.png in Resources */ = {isa = PBXBuildFile; fileRef = 887E481610C6ECC100F260C8 /* iso-test.png */; };
@@ -427,8 +426,6 @@
 		887E47F510C6EB9E00F260C8 /* InterfaceLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterfaceLayer.m; sourceTree = "<group>"; };
 		887E47F610C6EB9E00F260C8 /* MyMoveTo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyMoveTo.h; sourceTree = "<group>"; };
 		887E47F710C6EB9E00F260C8 /* MyMoveTo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyMoveTo.m; sourceTree = "<group>"; };
-		887E47F810C6EB9E00F260C8 /* MySequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MySequence.h; sourceTree = "<group>"; };
-		887E47F910C6EB9E00F260C8 /* MySequence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MySequence.m; sourceTree = "<group>"; };
 		887E481410C6ECC100F260C8 /* grossini_dance_atlas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grossini_dance_atlas.png; sourceTree = "<group>"; };
 		887E481510C6ECC100F260C8 /* Immagine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Immagine.png; sourceTree = "<group>"; };
 		887E481610C6ECC100F260C8 /* iso-test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iso-test.png"; sourceTree = "<group>"; };
@@ -558,8 +555,6 @@
 				887E47F510C6EB9E00F260C8 /* InterfaceLayer.m */,
 				887E47F610C6EB9E00F260C8 /* MyMoveTo.h */,
 				887E47F710C6EB9E00F260C8 /* MyMoveTo.m */,
-				887E47F810C6EB9E00F260C8 /* MySequence.h */,
-				887E47F910C6EB9E00F260C8 /* MySequence.m */,
 				1F3B9A2C0EF2145700286867 /* BabelAppDelegate.h */,
 				1F3B9A2B0EF2145700286867 /* BabelAppDelegate.m */,
 				88C6DD3810E93B7500C10211 /* PlayerData.h */,
@@ -1043,7 +1038,6 @@
 				887E47FB10C6EB9E00F260C8 /* GameLayer.m in Sources */,
 				887E47FC10C6EB9E00F260C8 /* InterfaceLayer.m in Sources */,
 				887E47FD10C6EB9E00F260C8 /* MyMoveTo.m in Sources */,
-				887E47FE10C6EB9E00F260C8 /* MySequence.m in Sources */,
 				88D67B7810E64ECE00D36BC2 /* SharedData.m in Sources */,
 				88C6DD3A10E93B7500C10211 /* PlayerData.m in Sources */,
 			);
