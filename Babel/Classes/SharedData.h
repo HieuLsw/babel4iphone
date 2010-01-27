@@ -6,16 +6,22 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <CFNetwork/CFNetwork.h>
+
 @interface SharedData : NSObject
 {
 	NSMutableArray *mainMenu;   // menu principale (stringhe)
 	NSMutableArray *playerList; // lista di PlayerData
+	
 	int playerSel;              // player attuale
+	
+	NSInputStream *inputStream;
+	NSOutputStream *outputStream; 
 }
 
 @property (nonatomic, retain) NSMutableArray *mainMenu;
 @property (nonatomic, retain) NSMutableArray *playerList;
-@property (readwrite, assign) int playerSel;
 
 -(void) initGame;                                                                 // init del game singleton
 -(NSMutableArray *) getMenu:(NSString *)name;                                     // ritorna lista di stringhe del menu da visualizzare

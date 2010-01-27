@@ -189,6 +189,7 @@
 		8800DE8710E3FA88005BE091 /* Abduction.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8800DE8610E3FA88005BE091 /* Abduction.ttf */; };
 		8800DE9B10E3FCB4005BE091 /* sr.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8800DE9A10E3FCB4005BE091 /* sr.ttf */; };
 		8800DEB510E413A1005BE091 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 8800DEB410E413A1005BE091 /* back.png */; };
+		8821F73B1110DBAB008E0FAD /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8821F73A1110DBAB008E0FAD /* CFNetwork.framework */; };
 		887E47B310C6EA9500F260C8 /* CCFileUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47B210C6EA9500F260C8 /* CCFileUtils.m */; };
 		887E47FA10C6EB9E00F260C8 /* CoreFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F110C6EB9E00F260C8 /* CoreFunctions.m */; };
 		887E47FB10C6EB9E00F260C8 /* GameLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 887E47F310C6EB9E00F260C8 /* GameLayer.m */; };
@@ -416,6 +417,7 @@
 		8800DE8610E3FA88005BE091 /* Abduction.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Abduction.ttf; sourceTree = "<group>"; };
 		8800DE9A10E3FCB4005BE091 /* sr.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sr.ttf; sourceTree = "<group>"; };
 		8800DEB410E413A1005BE091 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
+		8821F73A1110DBAB008E0FAD /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		887E47B110C6EA9500F260C8 /* CCFileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFileUtils.h; sourceTree = "<group>"; };
 		887E47B210C6EA9500F260C8 /* CCFileUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFileUtils.m; sourceTree = "<group>"; };
 		887E47F010C6EB9E00F260C8 /* CoreFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreFunctions.h; sourceTree = "<group>"; };
@@ -473,6 +475,7 @@
 				506EDB88102F4C4000A389B3 /* libz.dylib in Frameworks */,
 				506EDBA5102F4C9F00A389B3 /* AVFoundation.framework in Frameworks */,
 				506EE1A91030508200A389B3 /* libcocos2d libraries.a in Frameworks */,
+				8821F73B1110DBAB008E0FAD /* CFNetwork.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,6 +532,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8821F73A1110DBAB008E0FAD /* CFNetwork.framework */,
 				DCCBF1B60F6022AE0040855A /* CoreGraphics.framework */,
 				DCCBF1B80F6022AE0040855A /* Foundation.framework */,
 				DCCBF1BA0F6022AE0040855A /* OpenGLES.framework */,
