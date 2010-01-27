@@ -12,7 +12,7 @@
 
 @implementation SharedData
 
-@synthesize mainMenu, playerList, playerSel;
+@synthesize mainMenu, playerList;//, iStream, oStream;
 
 -(void) dealloc
 {
@@ -20,6 +20,85 @@
 	[mainMenu release];
 	[playerList release];
 	[super dealloc];
+}
+
+-(void) openConnectOnServer:(NSString *)cmd
+{
+	CFHostRef host;
+	CFReadStreamRef readStream;
+	CFWriteStreamRef writeStream;
+	
+	host = CFHostCreateWithName(NULL, (CFStringRef)@"127.0.0.1");
+	CFStreamCreatePairWithSocketToCFHost(NULL, host, 66666, &readStream, &writeStream);
+	CFRelease(host);
+	
+	inputStream = [(NSInputStream *)readStream autorelease];
+	outputStream = [(NSOutputStream *)writeStream autorelease];
+	
+	[inputStream setDelegate:self];
+	[outputStream setDelegate:self];
+	[inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[inputStream open];
+	[outputStream open];
+}
+
+-(void) stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent
+{
+	NSString *io;
+	if (theStream == inputStream) io = @">>";
+	else io = @"<<";
+	
+	NSString *event;
+	switch (streamEvent)
+	{
+		case NSStreamEventNone:
+			event = @"NSStreamEventNone";
+			break;
+		case NSStreamEventOpenCompleted:
+			event = @"NSStreamEventOpenCompleted";
+			break;
+		case NSStreamEventHasBytesAvailable:
+			event = @"NSStreamEventHasBytesAvailable";
+			if (theStream == inputStream)
+			{
+				uint8_t buffer[1024];
+				int len;
+				while ([inputStream hasBytesAvailable])
+				{
+					len = [inputStream read:buffer maxLength:sizeof(buffer)];
+					if (len > 0)
+					{
+						NSString *output = [[NSString alloc] initWithBytes:buffer length:len encoding:NSASCIIStringEncoding];
+						//NSData *theData = [[NSData alloc] initWithBytes:buffer length:len];
+						if (nil != output)
+						{
+							//NSArray *arr = [output componentsSeparatedByString:@"|"];
+							NSLog(@"%@", output);
+							[output release];
+						}
+					}
+				}
+			}
+			break;
+		case NSStreamEventHasSpaceAvailable:
+			event = @"NSStreamEventHasSpaceAvailable";
+			break;
+		case NSStreamEventErrorOccurred:
+			event = @"NSStreamEventErrorOccurred";
+			break;
+		case NSStreamEventEndEncountered:
+			event = @"NSStreamEventEndEncountered";
+            [theStream close];
+            [theStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            [theStream release];
+            theStream = nil;
+			break;
+		default:
+			event = @"** Unknown";
+	}
+	
+	NSLog(@"%@ : %@", io, event);
 }
 
 -(void) initGame
@@ -50,7 +129,12 @@
 	[self.playerList addObject:p2];
 	[self.playerList addObject:p3];
 	
-	self.playerSel = arc4random() % [self.playerList count]; // x ora il turno comincia random
+	playerSel = arc4random() % [self.playerList count]; // x ora il turno comincia random
+	
+	// prova socket
+	[self openConnectOnServer:@"U|test\r\n"];
+	//[self sendCommand:@"M|cacca\r\n"];
+	//[self sendCommand:@"M|merda\r\n"];
 }
 
 -(NSMutableArray *) getMenu:(NSString *)name
@@ -66,13 +150,13 @@
 -(id) getPlayer:(int)i  // current player -1
 {
 	if (0 > i)
-		i = self.playerSel;
+		i = playerSel;
 	return [self.playerList objectAtIndex:i];
 }
 
 -(void) nextTurn
 {
-	self.playerSel = (self.playerSel + 1) % [self.playerList count];
+	playerSel = (playerSel + 1) % [self.playerList count];
 	
 	id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 	[layer getTurn];

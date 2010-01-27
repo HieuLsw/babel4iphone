@@ -10,7 +10,9 @@ class ServerProtocol(LineReceiver):
         self.username = None
     
     def connectionMade(self):
-        pass
+        print "Connection..."
+        self.factory.addClient("test", self)
+        #pass
     
     def lineReceived(self, data):
         data = data.split("\r\n")
@@ -20,6 +22,8 @@ class ServerProtocol(LineReceiver):
                 self.factory.addClient(m[1], self)
             elif 'M' == m[0]:
                 print m[1]
+            else:
+                print "no used: %s" % m
     
     def connectionLost(self , reason):
         self.factory.delClient(self.username)
