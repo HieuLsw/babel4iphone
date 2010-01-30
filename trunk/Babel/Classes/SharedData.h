@@ -23,6 +23,9 @@
 @property (nonatomic, retain) NSMutableArray *mainMenu;
 @property (nonatomic, retain) NSMutableArray *playerList;
 
+-(void) connectToServer:(NSString *)cmd;
+-(void) sendToServer:(NSString *)cmd;
+
 -(void) initGame;                                                                 // init del game singleton
 -(NSMutableArray *) getMenu:(NSString *)name;                                     // ritorna lista di stringhe del menu da visualizzare
 -(id) getPlayer:(int)i;                                                           // ritorna il player i o se usi -1 l'attuale del turno

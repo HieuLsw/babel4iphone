@@ -17,16 +17,22 @@
 -(void) dealloc
 {
 	NSLog(@"------------------- RELEASE SINGETON DATA ----------------------");
+	inputStream = nil;
+	outputStream = nil;
+	
 	[mainMenu release];
 	[playerList release];
 	[super dealloc];
 }
 
--(void) openConnectOnServer:(NSString *)cmd
+-(void) connectToServer:(NSString *)cmd
 {
 	CFHostRef host;
 	CFReadStreamRef readStream;
 	CFWriteStreamRef writeStream;
+	
+	readStream = NULL;
+	writeStream = NULL;
 	
 	host = CFHostCreateWithName(NULL, (CFStringRef)@"127.0.0.1");
 	CFStreamCreatePairWithSocketToCFHost(NULL, host, 66666, &readStream, &writeStream);
@@ -41,29 +47,37 @@
 	[outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[inputStream open];
 	[outputStream open];
+	
+	[self sendToServer:cmd];
 }
 
--(void) stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent
+-(void) sendToServer:(NSString *)cmd
+{
+	cmd = [cmd stringByAppendingString:@"\r\n"];
+    [outputStream write:(const uint8_t *)[cmd UTF8String] maxLength:[cmd length]];    
+}
+
+-(void) stream:(NSStream *)stream handleEvent:(NSStreamEvent)streamEvent
 {
 	NSString *io;
-	if (theStream == inputStream) io = @">>";
-	else io = @"<<";
+	if (stream == inputStream) io = @"[SERVER]";
+	else io = @"[CLIENT]";
 	
 	NSString *event;
 	switch (streamEvent)
 	{
 		case NSStreamEventNone:
-			event = @"NSStreamEventNone";
+			event = @"<< EventNone >>";
 			break;
 		case NSStreamEventOpenCompleted:
-			event = @"NSStreamEventOpenCompleted";
+			event = @"<< Connessione... >>";
 			break;
 		case NSStreamEventHasBytesAvailable:
-			event = @"NSStreamEventHasBytesAvailable";
-			if (theStream == inputStream)
+			event = @"<< Comunicazione dati... >>";
+			if (stream == inputStream)
 			{
 				uint8_t buffer[1024];
-				int len;
+				unsigned int len = 0;
 				while ([inputStream hasBytesAvailable])
 				{
 					len = [inputStream read:buffer maxLength:sizeof(buffer)];
@@ -73,29 +87,38 @@
 						//NSData *theData = [[NSData alloc] initWithBytes:buffer length:len];
 						if (nil != output)
 						{
-							//NSArray *arr = [output componentsSeparatedByString:@"|"];
-							NSLog(@"%@", output);
+							NSArray *arr = [output componentsSeparatedByString:@"|"];
 							[output release];
+							
+							if ([[arr objectAtIndex:0] isEqualToString:@"M"])
+							{
+								NSLog(@"%@ : %@", io, [arr objectAtIndex:1]);
+							}
+							else
+							{
+								NSLog(@"Not implemented server msg : %@", arr);
+							}
 						}
 					}
 				}
 			}
 			break;
 		case NSStreamEventHasSpaceAvailable:
-			event = @"NSStreamEventHasSpaceAvailable";
+			event = @"<< Comunicazione disponibile... >>";
 			break;
 		case NSStreamEventErrorOccurred:
-			event = @"NSStreamEventErrorOccurred";
+			event = @"<< Errore di connesione... >>";
 			break;
 		case NSStreamEventEndEncountered:
-			event = @"NSStreamEventEndEncountered";
-            [theStream close];
-            [theStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-            [theStream release];
-            theStream = nil;
+			event = @"<< Connessione persa... >>";
+            [stream close];
+            [stream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            //[stream release]; // fa scoppiare
+			//if (stream != NULL) CFRelease(stream);
+            stream = nil;
 			break;
 		default:
-			event = @"** Unknown";
+			event = @"<< Unknown >>";
 	}
 	
 	NSLog(@"%@ : %@", io, event);
@@ -132,9 +155,9 @@
 	playerSel = arc4random() % [self.playerList count]; // x ora il turno comincia random
 	
 	// prova socket
-	[self openConnectOnServer:@"U|test\r\n"];
-	//[self sendCommand:@"M|cacca\r\n"];
-	//[self sendCommand:@"M|merda\r\n"];
+	[self connectToServer:@"U|test"];
+	[self sendToServer:@"M|cacca"];
+	[self sendToServer:@"M|merda"];
 }
 
 -(NSMutableArray *) getMenu:(NSString *)name
