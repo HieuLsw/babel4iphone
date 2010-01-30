@@ -1,3 +1,5 @@
+#!/usr/bin/python -O
+
 from twisted.internet import reactor
 from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
@@ -11,8 +13,6 @@ class ServerProtocol(LineReceiver):
     
     def connectionMade(self):
         print "Connection..."
-        self.factory.addClient("test", self)
-        #pass
     
     def lineReceived(self, data):
         data = data.split("\r\n")
@@ -73,7 +73,7 @@ class ServerFactory(Factory):
 
 def loop(f):
     #print f.clients
-    f.sendAll("sono server")
+    f.sendAll("M|sono server")
     reactor.callLater(5, loop, f)
 
 if __name__=="__main__":
