@@ -92,7 +92,7 @@
 		[self addChild:controller z:0 tag:2];
 		[self addChild:lturn z:0 tag:1];
 		
-		[self getTurn];
+		//[self getTurn];
 	}
 	
 	return self;

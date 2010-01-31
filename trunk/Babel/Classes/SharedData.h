@@ -17,13 +17,14 @@
 	int playerSel;              // player attuale
 	
 	NSInputStream *inputStream;
-	NSOutputStream *outputStream; 
+	NSOutputStream *outputStream;
+	NSString *DELIMETER;
 }
 
 @property (nonatomic, retain) NSMutableArray *mainMenu;
 @property (nonatomic, retain) NSMutableArray *playerList;
 
--(void) connectToServer:(NSString *)cmd;
+-(void) connectToServer;
 -(void) sendToServer:(NSString *)cmd;
 
 -(void) initGame;                                                                 // init del game singleton
