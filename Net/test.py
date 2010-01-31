@@ -50,5 +50,5 @@ def loop(f):
 if __name__=="__main__":
     f = ClientFactory()
     reactor.connectTCP('localhost', 66666, f)
-    reactor.callLater(5, loop, f)
+    #reactor.callLater(5, loop, f)
     reactor.run()

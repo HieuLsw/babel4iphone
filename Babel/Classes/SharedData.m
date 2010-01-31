@@ -19,13 +19,14 @@
 	NSLog(@"------------------- RELEASE SINGETON DATA ----------------------");
 	inputStream = nil;
 	outputStream = nil;
+	[DELIMETER release];
 	
 	[mainMenu release];
 	[playerList release];
 	[super dealloc];
 }
 
--(void) connectToServer:(NSString *)cmd
+-(void) connectToServer
 {
 	CFHostRef host;
 	CFReadStreamRef readStream;
@@ -48,12 +49,13 @@
 	[inputStream open];
 	[outputStream open];
 	
-	[self sendToServer:cmd];
+	DELIMETER = [[NSString alloc] initWithString:@"\r\n"];
+	[self sendToServer:[@"U|" stringByAppendingString:[[UIDevice currentDevice] uniqueIdentifier]]];
 }
 
 -(void) sendToServer:(NSString *)cmd
 {
-	cmd = [cmd stringByAppendingString:@"\r\n"];
+	cmd = [cmd stringByAppendingString:DELIMETER];
     [outputStream write:(const uint8_t *)[cmd UTF8String] maxLength:[cmd length]];    
 }
 
@@ -84,19 +86,24 @@
 					if (len > 0)
 					{
 						NSString *output = [[NSString alloc] initWithBytes:buffer length:len encoding:NSASCIIStringEncoding];
-						//NSData *theData = [[NSData alloc] initWithBytes:buffer length:len];
 						if (nil != output)
 						{
-							NSArray *arr = [output componentsSeparatedByString:@"|"];
+							NSArray *arr_output = [output componentsSeparatedByString:DELIMETER];
 							[output release];
 							
-							if ([[arr objectAtIndex:0] isEqualToString:@"M"])
+							for (NSString *outp in arr_output)
 							{
-								NSLog(@"%@ : %@", io, [arr objectAtIndex:1]);
-							}
-							else
-							{
-								NSLog(@"Not implemented server msg : %@", arr);
+								if (![outp isEqual:@""])
+								{
+									NSArray *arr = [outp componentsSeparatedByString:@"|"];
+									
+									if ([[arr objectAtIndex:0] isEqualToString:@"M"])
+										NSLog(@"%@ : %@", io, [arr objectAtIndex:1]);
+									else if ([[arr objectAtIndex:0] isEqualToString:@"T"])
+										NSLog(@"%@ : E' il turno di %@", io, [arr objectAtIndex:1]);
+									else
+										NSLog(@"Not implemented server msg : %@", arr);
+								}
 							}
 						}
 					}
@@ -154,10 +161,8 @@
 	
 	playerSel = arc4random() % [self.playerList count]; // x ora il turno comincia random
 	
-	// prova socket
-	[self connectToServer:@"U|test"];
-	[self sendToServer:@"M|cacca"];
-	[self sendToServer:@"M|merda"];
+	// conn socket
+	[self connectToServer];
 }
 
 -(NSMutableArray *) getMenu:(NSString *)name
