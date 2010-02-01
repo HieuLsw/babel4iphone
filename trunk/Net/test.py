@@ -44,11 +44,11 @@ class ClientFactory(Factory):
 
 
 def loop(f):
-    f.send("M|sono client %s" % f.client.username)
-    reactor.callLater(5, loop, f)
+    f.send("F|%s" % "6397D24E-299F-594E-BEE1-C1BBEA6C0B9E")
+    #reactor.callLater(5, loop, f)
 
 if __name__=="__main__":
     f = ClientFactory()
     reactor.connectTCP('localhost', 66666, f)
-    #reactor.callLater(5, loop, f)
+    reactor.callLater(1, loop, f)
     reactor.run()
