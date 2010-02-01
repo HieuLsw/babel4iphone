@@ -96,11 +96,24 @@
 								if (![outp isEqual:@""])
 								{
 									NSArray *arr = [outp componentsSeparatedByString:@"|"];
+									id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 									
 									if ([[arr objectAtIndex:0] isEqualToString:@"M"])
-										NSLog(@"%@ : %@", io, [arr objectAtIndex:1]);
+									{
+										if ([[arr objectAtIndex:1] isEqualToString:@"chiudi"])
+											[layer closeMenu];
+										else
+										{
+											NSArray *menuitems = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
+											[layer initMenu:menuitems];
+										}
+										NSLog(@"%@ : Menu %@", io, [arr objectAtIndex:1]);
+									}
 									else if ([[arr objectAtIndex:0] isEqualToString:@"T"])
+									{
+										[layer setTurn:[arr objectAtIndex:1]];
 										NSLog(@"%@ : E' il turno di %@", io, [arr objectAtIndex:1]);
+									}
 									else
 										NSLog(@"Not implemented server msg : %@", arr);
 								}
@@ -160,9 +173,6 @@
 	[self.playerList addObject:p3];
 	
 	playerSel = arc4random() % [self.playerList count]; // x ora il turno comincia random
-	
-	// conn socket
-	[self connectToServer];
 }
 
 -(NSMutableArray *) getMenu:(NSString *)name
@@ -184,7 +194,7 @@
 
 -(void) nextTurn
 {
-	playerSel = (playerSel + 1) % [self.playerList count];
+	//playerSel = (playerSel + 1) % [self.playerList count];
 	
 	id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 	[layer getTurn];

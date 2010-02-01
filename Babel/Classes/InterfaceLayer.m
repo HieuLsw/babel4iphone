@@ -12,45 +12,7 @@
 #define SHIFT 10000 // shifta i tag degli item dei menu da 10000 in poi
 #define MOVE 20
 
-@implementation MyAction
-
-@synthesize myType;
-
--(void) update:(ccTime)t
-{
-	if (@"menu" == [self myType])
-	{
-		id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
-		[layer initMenu:@"Main"];
-	}
-	else if (@"npc" == [self myType])
-	{
-		[[SharedData Initialize] generateAction];
-		[[SharedData Initialize] nextTurn];
-	}
-}
-
-+(id) showMenu
-{
-	id temp = [self actionWithDuration:0.0];
-	[temp setMyType:@"menu"];
-	return temp;
-}
-
-+(id) npc
-{
-	id temp = [self actionWithDuration:0.0];
-	[temp setMyType:@"npc"];
-	return temp;
-}
-
-@end
-
-// fine classe utils
-
 @implementation InterfaceLayer
-
-@synthesize menu, sel, num, active;
 
 -(id) init
 {
@@ -91,53 +53,41 @@
 		[self addChild:backmenu z:0  tag:0];
 		[self addChild:controller z:0 tag:2];
 		[self addChild:lturn z:0 tag:1];
-		
-		//[self getTurn];
 	}
 	
 	return self;
 }
 
--(void) initMenu:(NSString *)name
+-(void) initMenu:(NSArray *)menuitems
 {	
+	CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
+	[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 117)]];
+	
+	int y = 50;
+	for (NSString *item in menuitems)
+	{
+		CCLabel *lb = [CCLabel labelWithString:item dimensions:CGSizeMake(120, 28) alignment:UITextAlignmentLeft fontName:@"Lucon1" fontSize:14];
+		lb.position = ccp(72, y);
+		y -= MOVE;
+		[self addChild:lb z:1 tag:num + SHIFT];
+		[self configItem:num + SHIFT move:0];
+		num += 1;
+	}
+	
+	active = YES;
+}
+
+-(void) closeMenu
+{
+	active = NO;
+	
 	for (int i = 0 + SHIFT; i < num + SHIFT; i++) // clean
 		[self removeChildByTag:i cleanup:TRUE];
 	sel = 0;
 	num = 0;
 	
 	CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
-	NSMutableArray *menuitems = [[SharedData Initialize] getMenu:name];
-	
-	if (NULL == menuitems) // se null e' un'azione
-	{
-		active = NO;
-		
-		[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 0)]];
-		
-		// fare azione
-		[[SharedData Initialize] addAction:name ofType:menu toTarget:0];
-		[[SharedData Initialize] nextTurn];
-		
-		menu = NULL; // liberare?
-	}
-	else
-	{
-		menu = name; // liberare vecchia?
-		
-		[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 117)]];
-		
-		int y = 50;
-		for (NSString *item in menuitems)
-		{
-			CCLabel *lb = [CCLabel labelWithString:item dimensions:CGSizeMake(120, 28) alignment:UITextAlignmentLeft fontName:@"Lucon1" fontSize:14];
-			lb.position = ccp(72, y);
-			y -= MOVE;
-			[self addChild:lb z:1 tag:num + SHIFT];
-			[self configItem:num + SHIFT move:0];
-			num += 1;
-		}
-		active = YES;
-	}
+	[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 0)]];
 }
 
 -(void) configItem:(int)i move:(int)m
@@ -155,15 +105,11 @@
 		[lb setOpacity:0];
 }
 
--(void) getTurn
+-(void) setTurn:(NSString *)name
 {
 	CCLabel *lb = (CCLabel *)[self getChildByTag:1];
-	id p = [[SharedData Initialize] getPlayer:-1];
-	[lb setString:[[p name] stringByAppendingString:@" is ready!!!"]];
-	if (@"NPC" != [p type])
-		[lb runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], [MyAction showMenu], nil]];
-	else
-		[lb runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], [MyAction npc], nil]];
+	[lb setString:[name stringByAppendingString:@" is ready!!!"]];
+	[lb runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], nil]];
 }
 
 -(void) upCallback:(id)sender
@@ -176,6 +122,7 @@
 			for (int i = 0 + SHIFT; i < num + SHIFT; i++)
 				[self configItem:i move:-MOVE];
 		}
+		CCLOG(@"Button up");
 	}
 }
 
@@ -189,22 +136,27 @@
 			for (int i = 0 + SHIFT; i < num + SHIFT; i++)
 				[self configItem:i move:MOVE];
 		}
+		CCLOG(@"Button down");
 	}
 }
 
 -(void) leftCallback:(id)sender
 {
 	if (active)
-		[self initMenu:@"Main"]; // sempre a 2 livelli main e un altro
+	{
+		//[self initMenu:@"Main"]; // sempre a 2 livelli main e un altro
+		CCLOG(@"Button left");
+	}
 }
 
 -(void) rightCallback:(id)sender
 {
 	if (active)
 	{
-		NSMutableArray *menuitems = [[SharedData Initialize] getMenu:menu];
-		NSString *name = [menuitems objectAtIndex:sel];
-		[self initMenu:name];
+		//NSMutableArray *menuitems = [[SharedData Initialize] getMenu:menu];
+		//NSString *name = [menuitems objectAtIndex:sel];
+		//[self closeMenu];
+		CCLOG(@"Button right");
 	}
 }
 

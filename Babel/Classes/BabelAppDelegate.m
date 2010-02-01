@@ -65,6 +65,7 @@
 	[scene addChild:mlayer z:1 tag:1];  // tag 1 del menu/dialog/map/ui layer
 	
 	[[CCDirector sharedDirector] runWithScene: scene];
+	[[SharedData Initialize] connectToServer];
 }
 
 -(void) applicationWillResignActive:(UIApplication *)application

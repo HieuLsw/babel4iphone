@@ -13,7 +13,6 @@
 {
 	NSMutableArray *mainMenu;   // menu principale (stringhe)
 	NSMutableArray *playerList; // lista di PlayerData
-	
 	int playerSel;              // player attuale
 	
 	NSInputStream *inputStream;
