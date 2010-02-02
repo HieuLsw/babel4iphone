@@ -21,6 +21,7 @@
 	if ((self = [super init]))
 	{
 		active = NO;
+		menu = NO;
 		
 		CCSprite *backmenu = [CCSprite spriteWithFile:@"back.png"];
 		[backmenu setOpacity:100];
@@ -59,35 +60,42 @@
 }
 
 -(void) initMenu:(NSArray *)menuitems
-{	
-	CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
-	[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 117)]];
-	
-	int y = 50;
-	for (NSString *item in menuitems)
+{
+	if (active && !menu)
 	{
-		CCLabel *lb = [CCLabel labelWithString:item dimensions:CGSizeMake(120, 28) alignment:UITextAlignmentLeft fontName:@"Lucon1" fontSize:14];
-		lb.position = ccp(72, y);
-		y -= MOVE;
-		[self addChild:lb z:1 tag:num + SHIFT];
-		[self configItem:num + SHIFT move:0];
-		num += 1;
+		CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
+		[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 117)]];
+		
+		int y = 50;
+		for (NSString *item in menuitems)
+		{
+			CCLabel *lb = [CCLabel labelWithString:item dimensions:CGSizeMake(120, 28) alignment:UITextAlignmentLeft fontName:@"Lucon1" fontSize:14];
+			lb.position = ccp(72, y);
+			y -= MOVE;
+			[self addChild:lb z:1 tag:num + SHIFT];
+			[self configItem:num + SHIFT move:0];
+			num += 1;
+		}
+		
+		menu = YES;
 	}
-	
-	active = YES;
 }
 
 -(void) closeMenu
 {
-	active = NO;
-	
-	for (int i = 0 + SHIFT; i < num + SHIFT; i++) // clean
-		[self removeChildByTag:i cleanup:TRUE];
-	sel = 0;
-	num = 0;
-	
-	CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
-	[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 0)]];
+	if (menu)
+	{		
+		for (int i = 0 + SHIFT; i < num + SHIFT; i++) // clean
+			[self removeChildByTag:i cleanup:TRUE];
+		
+		sel = 0;
+		num = 0;
+		
+		CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
+		[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 0)]];
+		
+		menu = NO;
+	}
 }
 
 -(void) configItem:(int)i move:(int)m
@@ -107,9 +115,13 @@
 
 -(void) setTurn:(NSString *)name
 {
+	[self closeMenu];
+	
 	CCLabel *lb = (CCLabel *)[self getChildByTag:1];
 	[lb setString:[name stringByAppendingString:@" is ready!!!"]];
 	[lb runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], nil]];
+	
+	active = !active;
 }
 
 -(void) upCallback:(id)sender
@@ -122,7 +134,6 @@
 			for (int i = 0 + SHIFT; i < num + SHIFT; i++)
 				[self configItem:i move:-MOVE];
 		}
-		CCLOG(@"Button up");
 	}
 }
 
@@ -136,7 +147,6 @@
 			for (int i = 0 + SHIFT; i < num + SHIFT; i++)
 				[self configItem:i move:MOVE];
 		}
-		CCLOG(@"Button down");
 	}
 }
 
@@ -144,7 +154,6 @@
 {
 	if (active)
 	{
-		//[self initMenu:@"Main"]; // sempre a 2 livelli main e un altro
 		CCLOG(@"Button left");
 	}
 }
@@ -153,10 +162,8 @@
 {
 	if (active)
 	{
-		//NSMutableArray *menuitems = [[SharedData Initialize] getMenu:menu];
-		//NSString *name = [menuitems objectAtIndex:sel];
-		//[self closeMenu];
-		CCLOG(@"Button right");
+		[[SharedData Initialize] menu:sel];
+		[self closeMenu];
 	}
 }
 
