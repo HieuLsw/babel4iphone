@@ -52,9 +52,6 @@
 	[[CCDirector sharedDirector] attachInView:window];	
 	[window makeKeyAndVisible];		
 	
-	// singleton data
-	[[SharedData Initialize] initGame];
-	
 	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
 	

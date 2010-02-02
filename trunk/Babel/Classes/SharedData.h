@@ -11,27 +11,15 @@
 
 @interface SharedData : NSObject
 {
-	NSMutableArray *mainMenu;   // menu principale (stringhe)
-	NSMutableArray *playerList; // lista di PlayerData
-	int playerSel;              // player attuale
-	
 	NSInputStream *inputStream;
 	NSOutputStream *outputStream;
 	NSString *DELIMETER;
 }
 
-@property (nonatomic, retain) NSMutableArray *mainMenu;
-@property (nonatomic, retain) NSMutableArray *playerList;
-
 -(void) connectToServer;
 -(void) sendToServer:(NSString *)cmd;
 
--(void) initGame;                                                                 // init del game singleton
--(NSMutableArray *) getMenu:(NSString *)name;                                     // ritorna lista di stringhe del menu da visualizzare
--(id) getPlayer:(int)i;                                                           // ritorna il player i o se usi -1 l'attuale del turno
--(void) nextTurn;                                                                 // inc indice player attuale, cioe' passa al successivo della lista
--(void) addAction:(NSString *)name ofType:(NSString *)type toTarget:(int)target;
--(void) generateAction;
+-(void) menu:(int)i;
 
 +(SharedData *) Initialize;
 
