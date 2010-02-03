@@ -2,7 +2,7 @@ from twisted.internet import reactor
 from twisted.enterprise import adbapi
 
 def getData():
-    return dbpool.runQuery("select * from auth_user")
+    return dbpool.runQuery("select * from user")
 
 def printResult(results):
     for item in results:
@@ -13,7 +13,7 @@ def close():
     reactor.stop()
 
 if __name__=='__main__':
-    dbpool = adbapi.ConnectionPool("MySQLdb", user="root", db="CmDB")
+    dbpool = adbapi.ConnectionPool("MySQLdb", user="root", db="gameDB")
     getData().addCallback(printResult)
     #getData().addCallback(printResult)
     reactor.callLater(0.5, close)

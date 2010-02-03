@@ -13,12 +13,12 @@
 @implementation SharedData
 
 -(void) dealloc
-{
-	NSLog(@"------------------- RELEASE SINGETON DATA ----------------------");
-	
+{	
 	[inputStream release];
 	[outputStream release];
 	[DELIMETER release];
+	
+	NSLog(@"------------------- RELEASE SINGETON DATA ----------------------");
 	
 	[super dealloc];
 }
@@ -132,9 +132,7 @@
 			event = @"<< Connessione persa... >>";
             [stream close];
             [stream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-            //[stream release]; // fa scoppiare
-			//if (stream != NULL) CFRelease(stream);
-            stream = nil;
+            //[stream release]; // libero all'uscita
 			break;
 		default:
 			event = @"<< Unknown >>";
