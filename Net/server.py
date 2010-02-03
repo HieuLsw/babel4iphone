@@ -3,7 +3,8 @@
 from twisted.internet import reactor
 from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
-import threading, time
+import time
+#import threading
 
 ## FUNC ##
 
