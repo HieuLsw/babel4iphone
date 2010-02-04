@@ -10,38 +10,44 @@ class ApiDB(object):
         except Exception, e:
             print e
     
-    def _getData2(self, txn, select, table, where):
+    def __getData(self, txn, select, table, where):
         sql = "SELECT %s FROM %s WHERE %s" % (select, table, where)
         txn.execute(sql)
         result = txn.fetchall()
         if result:
             print result[0]
-            return result[0][0]
-        else:
-            return None
-    
-    def getData2(self, select, table, where = "'1'"):
-        return self.conn.runInteraction(self._getData2, select, table, where)
     
     def getData(self, select, table, where = "'1'"):
-        sql = "SELECT %s FROM %s WHERE %s" % (select, table, where)
-        self.conn.runQuery(sql).addCallbacks(self.printResult)
+        if self.conn:
+            self.conn.runInteraction(self.__getData, select, table, where)
     
     def setData(self, table, fields):
-        keys = fields.keys()
-        values = fields.values()
-        sql = "INSERT INTO %s(%s) VALUES(%s)" % (table, ','.join(keys), ','.join(values))
-        self.conn.runQuery(sql).addCallbacks(self.printResult)
+        if self.conn:
+            keys = fields.keys()
+            values = fields.values()
+            sql = "INSERT INTO %s(%s) VALUES(%s)" % (table, ','.join(keys), ','.join(values))
+            self.conn.runQuery(sql)
     
-    def printResult(self, results):
-        for item in results:
-            print item
+    # High Func
+    
+    def __goc_user(self, txn, uid, name):
+        sql = "SELECT * FROM user WHERE uid=%s" % (uid)
+        txn.execute(sql)
+        result = txn.fetchall()
+        if result:
+            print result[0]
+        else:
+            self.setData("user", {'uid': uid, "name": name})
+            reactor.callLater(0.5, self.get_or_create_user, uid, name)
+    
+    def get_or_create_user(self, uid, name):
+        if self.conn:
+            self.conn.runInteraction(self.__goc_user, uid, name)
 
 
 if __name__=="__main__":
     conn = ApiDB()
-    #conn.setData("user", {"uid": "'U41242'", "name": "'vito'"})
-    conn.getData2("*", "user")
-    #conn.getData("*", "user")
+    conn.get_or_create_user("'U41242'", "'vito'")
+    #for i in xrange(100):
+    #    conn.getData("*", "user")
     reactor.run()
-    

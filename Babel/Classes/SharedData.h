@@ -18,6 +18,7 @@
 
 -(void) connectToServer;
 -(void) sendToServer:(NSString *)cmd;
+-(void) __dispatch:(NSString *)msg;
 
 -(void) menu:(int)i;
 
