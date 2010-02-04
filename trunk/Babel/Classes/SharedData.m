@@ -8,7 +8,6 @@
 
 #import "SharedData.h"
 #import "CCDirector.h"
-//#import "PlayerData.h" // per l'init della lista player
 
 @implementation SharedData
 
@@ -87,36 +86,10 @@
 						NSString *output = [[NSString alloc] initWithBytes:buffer length:len encoding:NSASCIIStringEncoding];
 						if (nil != output)
 						{
-							NSArray *arr_output = [output componentsSeparatedByString:DELIMETER];
+							NSArray *array_output = [output componentsSeparatedByString:DELIMETER];
 							[output release];
-							
-							for (NSString *outp in arr_output)
-							{
-								if (![outp isEqual:@""])
-								{
-									NSArray *arr = [outp componentsSeparatedByString:@"|"];
-									id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
-									
-									if ([[arr objectAtIndex:0] isEqualToString:@"M"])
-									{
-										if ([[arr objectAtIndex:1] isEqualToString:@"chiudi"])
-											[layer closeMenu];
-										else
-										{
-											NSArray *menuitems = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
-											[layer initMenu:menuitems];
-										}
-										NSLog(@"%@ : Menu %@", io, [arr objectAtIndex:1]);
-									}
-									else if ([[arr objectAtIndex:0] isEqualToString:@"T"])
-									{
-										[layer setTurn:[arr objectAtIndex:1]];
-										NSLog(@"%@ : E' il turno di %@", io, [arr objectAtIndex:1]);
-									}
-									else
-										NSLog(@"Not implemented server msg : %@", arr);
-								}
-							}
+							for (NSString *msg in array_output)
+								if (![msg isEqual:@""]) [self __dispatch:msg];
 						}
 					}
 				}
@@ -139,6 +112,34 @@
 	}
 	
 	NSLog(@"%@ : %@", io, event);
+}
+
+-(void) __dispatch:(NSString *)msg
+{
+	id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
+	NSArray *arr = [msg componentsSeparatedByString:@"|"];
+	
+	// MENU
+	if ([[arr objectAtIndex:0] isEqualToString:@"M"])
+	{
+		if ([[arr objectAtIndex:1] isEqualToString:@"chiudi"])
+			[layer closeMenu];
+		else
+		{
+			NSArray *menuitems = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
+			[layer initMenu:menuitems];
+		}
+		NSLog(@"Menu %@", [arr objectAtIndex:1]);
+	}
+	// TURN
+	else if ([[arr objectAtIndex:0] isEqualToString:@"T"])
+	{
+		[layer setTurn:[arr objectAtIndex:1]];
+		NSLog(@"E' il turno di %@", [arr objectAtIndex:1]);
+	}
+	// NOT IMPLEMENTED
+	else
+		NSLog(@"Not implemented server msg : %@", arr);
 }
 
 -(void) menu:(int)i
