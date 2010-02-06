@@ -44,9 +44,9 @@ class ClientFactory(Factory):
 
 
 def loop(f):
-    #f.send("F|%s" % "6397D24E-299F-594E-BEE1-C1BBEA6C0B9E")
-    f.send("E|%s" % random.randint(0, 100))
-    reactor.callLater(0, loop, f)
+    f.send("F|%s" % "6397D24E-299F-594E-BEE1-C1BBEA6C0B9E")
+    #f.send("E|%s" % random.randint(0, 100))
+    #reactor.callLater(0, loop, f)
 
 
 if __name__=="__main__":

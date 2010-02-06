@@ -1,6 +1,6 @@
 #!/usr/bin/python -O
 
-import select, socket, sys, signal
+import select, socket, sys, signal, time
 
 BUFSIZ = 1024
 DELIMETER = "\r\n"
@@ -39,7 +39,8 @@ class Server(object):
         
         while running:
             try:
-                inputready, outputready, exceptready = select.select(self.inputs, self.clientmap.keys(), [])
+                inputready, outputready, exceptready = \
+                    select.select(self.inputs, self.clientmap.keys(), [])
             except select.error, e:
                 break
             except socket.error, e:
@@ -90,11 +91,48 @@ class Server(object):
                         else:
                             pass
         else:
-            print 'Del Client %d uid %s hung up' % (s.fileno(), self.clientmap[s])
+            print 'Del Client %d uid %s' % (s.fileno(), self.clientmap[s])
             s.close()
             self.inputs.remove(s)
             del self.clientmap[s]
 
 
+class reactor(object):
+    
+    def __init__(self):
+        self.fn = []
+    
+    def callLater(self, t, func, *args):
+        self.fn.append((time.time() + t, func, list(args)))
+    
+    def step(self):
+        if self.fn:
+            fn = self.fn.pop(0)
+            if time.time() >= fn[0]:
+                try:
+                    getattr(fn[1].im_self, fn[1].im_func.__name__)(*fn[2])
+                except:
+                    globals()[fn[1].__name__](*fn[2])
+            else:
+                self.fn.append(fn)
+
+
+class tmp:
+    
+    def echo(self, msg):
+        print msg
+        r.callLater(0, self.echo, "ciao")
+
+
+def echo(msg):
+    print msg
+    r.callLater(0, echo, "cazzo")
+
 if __name__ == "__main__":
-    Server().serve()
+    #Server().serve()
+    t = tmp()
+    r = reactor()
+    r.callLater(0, t.echo, "ciao")
+    r.callLater(0, echo, "cazzo")
+    while 1:
+        r.step()
