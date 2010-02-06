@@ -9,6 +9,9 @@
 #import "SharedData.h"
 #import "CCDirector.h"
 
+#define HOST "127.0.0.1"
+#define PORT 66666
+
 @implementation SharedData
 
 -(void) dealloc
@@ -31,10 +34,11 @@
 	readStream = NULL;
 	writeStream = NULL;
 	
-	host = CFHostCreateWithName(NULL, (CFStringRef)@"127.0.0.1");
-	CFStreamCreatePairWithSocketToCFHost(NULL, host, 66666, &readStream, &writeStream);
+	host = CFHostCreateWithName(NULL, (CFStringRef)[NSString stringWithFormat:@"%s", HOST]);
+	CFStreamCreatePairWithSocketToCFHost(NULL, host, PORT, &readStream, &writeStream);
 	CFRelease(host);
 	
+	NSLog(@"%@", host);
 	inputStream = [(NSInputStream *)readStream autorelease];
 	outputStream = [(NSOutputStream *)writeStream autorelease];
 	[inputStream retain];
