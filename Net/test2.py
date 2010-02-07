@@ -6,7 +6,7 @@ import random
 class ClientProtocol(LineReceiver):
     
     def __init__(self):
-        self.username = "U55555"
+        self.username = "U66666"
     
     def connectionMade(self):
         self.factory.client = self
