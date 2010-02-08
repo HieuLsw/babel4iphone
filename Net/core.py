@@ -37,9 +37,6 @@ class Core(object):
     def clearClientsMap(self):
         self.__c = {}
     
-    #def getClients(self):
-    #    return self.__c.values()
-                
     # Main Function Server
     
     def addClient(self, uid, s):
@@ -59,6 +56,7 @@ class Core(object):
         print 'Del Client uid %s' % c.uid
         c.socket.close()
         self.delClientMap(c.uid)
+        print self.__c
         #except Exception, e:
         #    print e
     
