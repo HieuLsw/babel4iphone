@@ -45,9 +45,9 @@ class Server(object):
         while running:
             try:
                 inputs = [self.server, sys.stdin]
-                inputs.extend(self.__core.getSockets())
-                inputready, outputready, exceptready = \
-                    select.select(inputs, self.__core.getSockets(), [])
+                scks = self.__core.getSockets()
+                inputs.extend(scks)
+                inputready, outputready, exceptready = select.select(inputs, scks, [])
             except select.error, e:
                 break
             except socket.error, e:
@@ -85,9 +85,9 @@ class Server(object):
                         if 'U' == m[0]:
                             self.__core.addClient(m[1], s)
                         elif 'F' == m[0]:
-                            c1 = self.__core.getClientBySocket(s)
                             c2 = self.__core.getClient(m[1])
-                            if c1 and c2:
+                            if c2:
+                                c1 = self.__core.getClientBySocket(s)
                                 self.__core.createArena(c1, c2)
                             else:
                                 self.sendLine(s, "E|Utente non connesso")
