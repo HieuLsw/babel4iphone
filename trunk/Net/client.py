@@ -1,3 +1,5 @@
+# client object
+
 class Client(object):
     
     def __init__(self, s, u, name):

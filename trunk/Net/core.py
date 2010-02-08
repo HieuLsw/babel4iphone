@@ -56,7 +56,6 @@ class Core(object):
         print 'Del Client uid %s' % c.uid
         c.socket.close()
         self.delClientMap(c.uid)
-        print self.__c
         #except Exception, e:
         #    print e
     
