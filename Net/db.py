@@ -1,40 +1,39 @@
-import MySQLdb
+import sys, MySQLdb
 
 class Database(object):
     
-    def __init__(self, host = "localhost", user = "root", passwd = "", db = "gameDB"):
+    def __init__(self, h = "localhost", u = "root", p = "", db = "gameDB"):
         self.conn = None
         try:
-            self.conn = MySQLdb.connect(host, user, passwd, db)
+            self.conn = MySQLdb.connect(h, u, p, db)
         except Exception, e:
             print e
+            self.close()
+            sys.exit(1)
     
     def close(self):
         if self.conn:
             self.conn.close()
     
     def select(self, select, table, where = "'1'"):
-        result = None
-        if self.conn:
-            cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
-            sql = "SELECT %s FROM %s WHERE %s;" % (select, table, where)
-            cursor.execute(sql)
-            result = cursor.fetchall()
-        return result
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+        sql = "SELECT %s FROM %s WHERE %s;" % (select, table, where)
+        cursor.execute(sql)
+        return cursor.fetchall()
     
     def insert(self, table, fields):
-        result = False
-        if self.conn:
-            try:
-                cursor = self.conn.cursor()
-                keys = fields.keys()
-                values = fields.values()
-                sql = "INSERT INTO %s(%s) VALUES(%s);" % (table, ','.join(keys), ','.join(values))
-                cursor.execute(sql)
-                self.conn.commit()
-                result = True
-            except:
-                self.conn.rollback()
+        result = True
+        try:
+            cursor = self.conn.cursor()
+            keys = fields.keys()
+            values = fields.values()
+            sql = "INSERT INTO %s(%s) VALUES(%s);" % \
+                (table, ','.join(keys), ','.join(values))
+            cursor.execute(sql)
+            self.conn.commit()
+        except:
+            result = False
+            self.conn.rollback()
         return result
     
     # High Functions Database

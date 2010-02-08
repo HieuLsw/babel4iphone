@@ -215,6 +215,9 @@
 		88D64B6510E4F53B0093396B /* arrow2.png in Resources */ = {isa = PBXBuildFile; fileRef = 88D64B6410E4F53B0093396B /* arrow2.png */; };
 		88D64EB110E566810093396B /* Default2.png in Resources */ = {isa = PBXBuildFile; fileRef = 88D64EB010E566810093396B /* Default2.png */; };
 		88D67B7810E64ECE00D36BC2 /* SharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D67B7710E64ECE00D36BC2 /* SharedData.m */; };
+		88E841931120A46300F0D78B /* arena.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E841921120A46300F0D78B /* arena.png */; };
+		88E8419F1120A88D00F0D78B /* MenuLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 88E8419E1120A88D00F0D78B /* MenuLayer.m */; };
+		88E841C51120ABFA00F0D78B /* Default3.png in Resources */ = {isa = PBXBuildFile; fileRef = 88E841C41120ABFA00F0D78B /* Default3.png */; };
 		DC6640030F83B3EA000B3E49 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC6640020F83B3EA000B3E49 /* AudioToolbox.framework */; };
 		DC6640050F83B3EA000B3E49 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC6640040F83B3EA000B3E49 /* OpenAL.framework */; };
 		DCCBF1B70F6022AE0040855A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCCBF1B60F6022AE0040855A /* CoreGraphics.framework */; };
@@ -448,6 +451,10 @@
 		88D64EB010E566810093396B /* Default2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default2.png; sourceTree = "<group>"; };
 		88D67B7610E64ECE00D36BC2 /* SharedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedData.h; sourceTree = "<group>"; };
 		88D67B7710E64ECE00D36BC2 /* SharedData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharedData.m; sourceTree = "<group>"; };
+		88E841921120A46300F0D78B /* arena.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arena.png; sourceTree = "<group>"; };
+		88E8419D1120A88D00F0D78B /* MenuLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuLayer.h; sourceTree = "<group>"; };
+		88E8419E1120A88D00F0D78B /* MenuLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuLayer.m; sourceTree = "<group>"; };
+		88E841C41120ABFA00F0D78B /* Default3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default3.png; sourceTree = "<group>"; };
 		DC6640020F83B3EA000B3E49 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DC6640040F83B3EA000B3E49 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		DCCBF1B60F6022AE0040855A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -558,6 +565,8 @@
 				887E47F710C6EB9E00F260C8 /* MyMoveTo.m */,
 				1F3B9A2C0EF2145700286867 /* BabelAppDelegate.h */,
 				1F3B9A2B0EF2145700286867 /* BabelAppDelegate.m */,
+				88E8419D1120A88D00F0D78B /* MenuLayer.h */,
+				88E8419E1120A88D00F0D78B /* MenuLayer.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -807,6 +816,8 @@
 		50F414EB1069373D002A0D5E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				88E841C41120ABFA00F0D78B /* Default3.png */,
+				88E841921120A46300F0D78B /* arena.png */,
 				889ACD0510E580AA0031E836 /* Lucon1.ttf */,
 				889ACCEF10E579A20031E836 /* Prototype.ttf */,
 				889ACCEB10E578440031E836 /* forgotte.ttf */,
@@ -1020,6 +1031,8 @@
 				889ACCEC10E578440031E836 /* forgotte.ttf in Resources */,
 				889ACCF010E579A20031E836 /* Prototype.ttf in Resources */,
 				889ACD0610E580AA0031E836 /* Lucon1.ttf in Resources */,
+				88E841931120A46300F0D78B /* arena.png in Resources */,
+				88E841C51120ABFA00F0D78B /* Default3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1038,6 +1051,7 @@
 				887E47FC10C6EB9E00F260C8 /* InterfaceLayer.m in Sources */,
 				887E47FD10C6EB9E00F260C8 /* MyMoveTo.m in Sources */,
 				88D67B7810E64ECE00D36BC2 /* SharedData.m in Sources */,
+				88E8419F1120A88D00F0D78B /* MenuLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,13 +20,14 @@
 	// Apple recommends to re-assign "self" with the "super" return value
 	if ((self = [super init]))
 	{
-		active = NO;
+		turn = NO;
 		menu = NO;
 		
 		CCSprite *backmenu = [CCSprite spriteWithFile:@"back.png"];
 		[backmenu setOpacity:100];
-		[backmenu setPosition:CGPointZero];
+		[backmenu setPosition:ccp(4, 121)];
 		[backmenu setAnchorPoint:ccp(0, 1)];
+		[backmenu setVisible:NO];
 		
 		CCMenuItemImage *a1 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(upCallback:)];
 		CCMenuItemImage *a2 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(downCallback:)];
@@ -37,19 +38,21 @@
 		[a2 setRotation:90];
 		[a3 setRotation:-180];
 		
-		[a1 setPosition:ccp(402, 80)];
-		[a2 setPosition:ccp(402, 30)];
-		[a3 setPosition:ccp(357, 55)];
-		[a4 setPosition:ccp(447, 55)];
+		[a1 setPosition:ccp(407, 86)];
+		[a2 setPosition:ccp(407, 28)];
+		[a3 setPosition:ccp(364, 57)];
+		[a4 setPosition:ccp(450, 57)];
 		
 		CCMenu *controller = [CCMenu menuWithItems:a1, a2, a3, a4, nil];
 		[controller setOpacity:100];
 		[controller setPosition:CGPointZero];
+		[controller setVisible:NO];
 		
 		CGSize s = [[CCDirector sharedDirector] winSize];
-		CCLabel *lturn = [CCLabel labelWithString:@"" dimensions:CGSizeMake(s.width, 44) alignment:UITextAlignmentCenter fontName:@"sr" fontSize:34];
+		CCLabel *lturn = [CCLabel labelWithString:@"" dimensions:CGSizeMake(s.width, 44) alignment:UITextAlignmentCenter fontName:@"sr" fontSize:24];
 		[lturn setPosition:ccp(s.width/2, s.height/2)];
-		[lturn setOpacity:0];
+		id seq = [CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], nil];
+		[lturn runAction:[CCRepeatForever actionWithAction:seq]];
 		
 		[self addChild:backmenu z:0  tag:0];
 		[self addChild:controller z:0 tag:2];
@@ -61,16 +64,18 @@
 
 -(void) initMenu:(NSArray *)menuitems
 {
-	if (active && !menu)
+	if (turn && !menu)
 	{
 		CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
-		[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 117)]];
+		[backmenu setVisible:YES];
+		CCMenu *controller = (CCMenu *)[self getChildByTag:2];
+		[controller setVisible:YES];
 		
-		int y = 50;
+		int y = 55;
 		for (NSString *item in menuitems)
 		{
 			CCLabel *lb = [CCLabel labelWithString:item dimensions:CGSizeMake(120, 28) alignment:UITextAlignmentLeft fontName:@"Lucon1" fontSize:14];
-			lb.position = ccp(72, y);
+			lb.position = ccp(75, y);
 			y -= MOVE;
 			[self addChild:lb z:1 tag:num + SHIFT];
 			[self configItem:num + SHIFT move:0];
@@ -92,7 +97,9 @@
 		num = 0;
 		
 		CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
-		[backmenu runAction:[CCMoveTo actionWithDuration:0.1 position:ccp(backmenu.position.x, 0)]];
+		[backmenu setVisible:NO];
+		CCMenu *controller = (CCMenu *)[self getChildByTag:2];
+		[controller setVisible:NO];
 		
 		menu = NO;
 	}
@@ -119,14 +126,13 @@
 	
 	CCLabel *lb = (CCLabel *)[self getChildByTag:1];
 	[lb setString:[name stringByAppendingString:@" is ready!!!"]];
-	[lb runAction:[CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], nil]];
 	
-	active = !active;
+	turn = !turn;
 }
 
 -(void) upCallback:(id)sender
 {
-	if (active)
+	if (turn)
 	{
 		if (sel > 0)
 		{
@@ -139,7 +145,7 @@
 
 -(void) downCallback:(id)sender
 {
-	if (active)
+	if (turn)
 	{
 		if (sel < num - 1) // occhio qua!!!!!!!!! - 1
 		{
@@ -152,7 +158,7 @@
 
 -(void) leftCallback:(id)sender
 {
-	if (active)
+	if (turn)
 	{
 		CCLOG(@"Button left");
 	}
@@ -160,7 +166,7 @@
 
 -(void) rightCallback:(id)sender
 {
-	if (active)
+	if (turn)
 	{
 		[[SharedData Initialize] menu:sel];
 		[self closeMenu];

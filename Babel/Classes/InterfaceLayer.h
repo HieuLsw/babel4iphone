@@ -12,7 +12,7 @@
 {
 	int sel;        // indice dell'elemento selezionato del menu corrente
 	int num;        // numero di item del menu corrente
-	bool active;
+	bool turn;
 	bool menu;
 }
 

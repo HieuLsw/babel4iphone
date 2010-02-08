@@ -1,14 +1,14 @@
 //
-//  GameLayer.m
-//  Genoma
+//  MenuLayer.m
+//  Babel
 //
-//  Created by Giovanni Amati on 08/10/09.
-//  Copyright 2009 __MyCompanyName__. All rights reserved.
+//  Created by Giovanni Amati on 08/02/10.
+//  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "GameLayer.h"
+#import "MenuLayer.h"
 
-@implementation GameLayer
+@implementation MenuLayer
 
 -(id) init
 {
@@ -16,7 +16,7 @@
 	// Apple recommends to re-assign "self" with the "super" return value
 	if ((self = [super init]))
 	{
-		CCSprite *sprite = [CCSprite spriteWithFile:@"arena.png"];
+		CCSprite *sprite = [CCSprite spriteWithFile:@"Default2.png"];
 		sprite.anchorPoint = CGPointZero;
 		[self addChild:sprite z:0];
 	}
