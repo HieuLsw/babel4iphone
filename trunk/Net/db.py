@@ -39,7 +39,7 @@ class Database(object):
     
     # High Functions Database
     
-    def getNameFromUid(self, uid):
+    def getNameByUid(self, uid):
         r = self.select("name", "user", "uid='%s'" % uid)
         if r:
             r = r[0]["name"]
@@ -50,4 +50,4 @@ if __name__ == "__main__":
     d = Database()
     for r in d.select("*", "user"):
         print r
-    print d.getNameFromUid("6397D24E-299F-594E-BEE1-C1BBEA6C0B9E")
+    print d.getNameByUid("6397D24E-299F-594E-BEE1-C1BBEA6C0B9E")
