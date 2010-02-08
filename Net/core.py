@@ -1,3 +1,4 @@
+from client import Client
 from db import Database
 from utils import *
 import time
@@ -9,121 +10,112 @@ class Core(object):
         self.__db = Database()
         
         self.__c = {}
-        self.__i = []
         self.__a = {}
         self.__mmenu = "Attack;Defende;Magics;Invocations;Items;Team;Settings"
     
-    def setInputs(self, inputs = []):
-        self.__i = inputs
-    
-    def getInputs(self):
-        return self.__i
-    
-    def clearSockets(self):
-        self.__c = {}
-    
     def getSockets(self):
-        return self.__c.keys()
+        return [c.socket for c in self.__c.values()]
     
-    def getSocket(self, u):
-        for s, uid in self.__c.items():
-            if uid == u:
-                return s
+    def setClientMap(self, u, c):
+        self.__c[u] = c
+    
+    def getClient(self, u):
+        if self.__c.has_key(u):
+            return self.__c[u]
         return None
     
-    def getSocketsMap(self):
-        return self.__c.items()
+    def getClientBySocket(self, s):
+        for c in self.__c.values():
+            if c.socket == s:
+                return c
+        return None
     
-    def getUids(self):
-        return self.__c.values()
+    def delClientMap(self, u):
+        if self.__c.has_key(u):
+            del self.__c[u]
     
-    def getUid(self, s):
-        result = None
-        if self.__c.has_key(s):
-            result = self.__c[s]
-        return result
+    def clearClientsMap(self):
+        self.__c = {}
     
-    def setUid(self, s, u):
-        self.__c[s] = u
-    
+    #def getClients(self):
+    #    return self.__c.values()
+                
     # Main Function Server
     
-    def addClient(self, s, uid):
-        print 'Add Client %d uid %s' % (s.fileno(), uid)
-        self.__i.append(s)
-        self.__c[s] = uid
-        self.__server.sendLine(s, "E|Connected")
-    
-    def delClient(self, s):
+    def addClient(self, uid, s):
+        c = None
         try:
-            print 'Del Client %d uid %s' % (s.fileno(), self.__c[s])
-            s.close()
-            self.__i.remove(s)
-            del self.__c[s]
+            c = Client(s, uid, self.__db.getNameByUid(uid))
         except Exception, e:
             print e
+        if c:
+            print 'Add Client uid %s' % uid
+            self.setClientMap(uid, c)
+            self.__server.sendLine(s, "E|Connected")
+    
+    def delClientBySocket(self, s):
+        #try:
+        c = self.getClientBySocket(s)
+        print 'Del Client uid %s' % c.uid
+        c.socket.close()
+        self.delClientMap(c.uid)
+        #except Exception, e:
+        #    print e
     
     def mainLoop(self):
         for k in self.__a.keys():
             t = self.__a[k]["time"]
             if time.time() - t > 15: # change turn
                 mode = 0
-                uids = k.split('|')
-                s0 = self.getSocket(uids[0])
-                s1 = self.getSocket(uids[1])
+                clients = [self.getClient(u) for u in k.split('|')]
+                other = clients[0]
                 
-                if not s0:
+                if not clients[0]:
                     mode += 1
-                    s0 = s1
-                if not s1:
+                    other = clients[1]
+                if not clients[1]:
                     mode += 2
                 
                 if mode < 3:
                     if mode > 0:
-                        self.__server.sendLine(s0, "T|fine")
+                        self.__server.sendLine(other.socket, "T|fine")
                         self.delArena(k)
                         return
                 else:
                     self.delArena(k)
                     return
                 
-                mapp = {uids[0]:s0, uids[1]:s1}
-                self.__a[k]["turn"] = next(uids, self.__a[k]["turn"])
+                self.__a[k]["turn"] = next(clients, self.__a[k]["turn"])
                 self.__a[k]["time"] = time.time()
                 
-                for u in uids:
-                    s = mapp[u]
-                    if u == self.__a[k]["turn"]:
+                for c in clients:
+                    if c.uid == self.__a[k]["turn"].uid:
                         #self.clients[uid].main_menu = ""
-                        name = self.__db.getNameFromUid(u)
-                        self.__server.sendLine(s, "T|%s" % name)
-                        self.__server.sendLine(s, "M|%s" % self.__mmenu, 2)
+                        self.__server.sendLine(c.socket, "T|%s" % c.name)
+                        self.__server.sendLine(c.socket, "M|%s" % self.__mmenu, 2)
                     else:
-                        name = self.__db.getNameFromUid(self.__a[k]["turn"])
-                        self.__server.sendLine(s, "M|chiudi")
-                        self.__server.sendLine(s, "T|%s" % name, 0.5)
+                        self.__server.sendLine(c.socket, "M|chiudi")
+                        self.__server.sendLine(c.socket, "T|%s" % self.__a[k]["turn"].name, 0.5)
         
-    def createArena(self, s1, s2):
-        uid1, uid2 = self.__c[s1], self.__c[s2]
+    def createArena(self, c1, c2):
         for k in self.__a.keys():
             uids = k.split('|')
-            if uid1 in uids and uid2 not in uids:
-                self.__server.sendLine(s2, "E|Utente impegnato")
+            if c1.uid in uids and c2.uid not in uids:
+                self.__server.sendLine(c2.socket, "E|Utente impegnato")
                 return
-            if uid2 in uids and uid1 not in uids:
-                self.__server.sendLine(s1, "E|Utente impegnato")
+            if c2.uid in uids and c1.uid not in uids:
+                self.__server.sendLine(c1.socket, "E|Utente impegnato")
                 return
         
-        k = '%s|%s' % (uid1, uid2)
+        k = '%s|%s' % (c1.uid, c2.uid)
         if not self.__a.has_key(k):
             print "Create Arena %s" % k
             self.__a[k] = {
-                "turn": uid2,
+                "turn": c2,
                 "time": time.time()
                 }
-            name = self.__db.getNameFromUid(uid2)
-            self.__server.sendLine(s2, "T|%s" % name)
-            self.__server.sendLine(s2, "M|%s" % self.__mmenu, 2)
+            self.__server.sendLine(c2.socket, "T|%s" % c2.name)
+            self.__server.sendLine(c2.socket, "M|%s" % self.__mmenu, 2)
         else:
             print "Client rientrato in Arena %s" % k
     

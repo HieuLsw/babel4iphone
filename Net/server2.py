@@ -9,13 +9,19 @@ DELIMETER = "\r\n"
 
 class Server(object):
     
-    def __init__(self, host = "localhost", port = 66666, backlog = 5):
-        self.__core = Core(self)
+    def __init__(self, host = "localhost", port = 66666, backlog = 5):        
+        try:
+            self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server.bind((host, port))
+            self.server.listen(backlog)
+        except socket.error, (value, message):
+            if self.server:
+                self.server.close()
+            print "Could not open socket: %s" % message
+            sys.exit(1)
         
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server.bind((host, port))
-        self.server.listen(backlog)
+        self.__core = Core(self)
         signal.signal(signal.SIGINT, self.sighandler) # ctrl-c
         print "Server is up on %s:%s..." % (host, port)
         self.__start()
@@ -29,18 +35,19 @@ class Server(object):
     def sendLine(self, s, msg, t = 0):
         msg = msg.replace("\r", "")
         msg = msg.replace("\n", "")
-        reactor.callLater(t, s, "send", msg + DELIMETER)
+        reactor.callLater(t, s.send, msg + DELIMETER)
     
     def __start(self):
-        self.__core.clearSockets()
-        self.__core.setInputs([self.server, sys.stdin])
+        self.__core.clearClientsMap()
         
         running = 1
         
         while running:
             try:
+                inputs = [self.server, sys.stdin]
+                inputs.extend(self.__core.getSockets())
                 inputready, outputready, exceptready = \
-                    select.select(self.__core.getInputs(), self.__core.getSockets(), [])
+                    select.select(inputs, self.__core.getSockets(), [])
             except select.error, e:
                 break
             except socket.error, e:
@@ -57,7 +64,7 @@ class Server(object):
                     try:
                         self.__dispatch(s)
                     except socket.error, e:
-                        self.__core.delClient(s)
+                        self.__core.delClientBySocket(s)
             self.__core.mainLoop()
             reactor.step()
         self.server.close()
@@ -69,22 +76,24 @@ class Server(object):
         except:
             pass
         if not data:
-            self.__core.delClient(s)
+            self.__core.delClientBySocket(s)
         else:
             for msg in data:
                 if msg:
                     m = msg.split('|')
                     if m:
                         if 'U' == m[0]:
-                            self.__core.addClient(s, m[1])
+                            self.__core.addClient(m[1], s)
                         elif 'F' == m[0]:
-                            s2 = self.__core.getSocket(m[1])
-                            if s2:
-                                self.__core.createArena(s, s2)
+                            c1 = self.__core.getClientBySocket(s)
+                            c2 = self.__core.getClient(m[1])
+                            if c1 and c2:
+                                self.__core.createArena(c1, c2)
                             else:
                                 self.sendLine(s, "E|Utente non connesso")
                         elif 'E' == m[0]:
-                            print "Echo %s: %s" % (self.__core.getUid(s), m[1])
+                            c1 = self.__core.getClientBySocket(s)
+                            print "Echo %s: %s" % (c1.uid, m[1])
                         else:
                             print "Not implemented: %s" % m
 
