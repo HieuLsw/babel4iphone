@@ -1,4 +1,4 @@
-# client object
+# Client object
 
 class Client(object):
     
