@@ -64,7 +64,8 @@ class Core(object):
             t = self.__a[k]["time"]
             if time.time() - t > 15: # change turn
                 mode = 0
-                clients = [self.getClient(u) for u in k.split('|')]
+                uids = k.split('|')
+                clients = [self.getClient(u) for u in uids]
                 other = clients[0]
                 
                 if not clients[0]:
@@ -82,17 +83,17 @@ class Core(object):
                     self.delArena(k)
                     return
                 
-                self.__a[k]["turn"] = next(clients, self.__a[k]["turn"])
+                self.__a[k]["turn"] = next(uids, self.__a[k]["turn"])
                 self.__a[k]["time"] = time.time()
                 
                 for c in clients:
-                    if c.uid == self.__a[k]["turn"].uid:
+                    if c.uid == self.__a[k]["turn"]:
                         #self.clients[uid].main_menu = ""
                         self.__server.sendLine(c.socket, "T|%s" % c.name)
                         self.__server.sendLine(c.socket, "M|%s" % self.__mmenu, 2)
                     else:
                         self.__server.sendLine(c.socket, "M|chiudi")
-                        self.__server.sendLine(c.socket, "T|%s" % self.__a[k]["turn"].name, 0.5)
+                        self.__server.sendLine(c.socket, "T|%s" % self.getClient(self.__a[k]["turn"]).name, 0.5)
         
     def createArena(self, c1, c2):
         for k in self.__a.keys():
@@ -108,7 +109,7 @@ class Core(object):
         if not self.__a.has_key(k):
             print "Create Arena %s" % k
             self.__a[k] = {
-                "turn": c2,
+                "turn": c2.uid,
                 "time": time.time()
                 }
             self.__server.sendLine(c2.socket, "T|%s" % c2.name)
