@@ -89,11 +89,12 @@ class Core(object):
                 for c in clients:
                     if c.uid == self.__a[k]["turn"]:
                         #self.clients[uid].main_menu = ""
-                        self.__server.sendLine(c.socket, "T|%s" % c.name)
-                        self.__server.sendLine(c.socket, "M|%s" % self.__mmenu, 2)
+                        self.__server.sendLine(c.socket, ["T|%s" % c.name, "M|%s" % self.__mmenu], 2)
                     else:
-                        self.__server.sendLine(c.socket, "M|chiudi")
-                        self.__server.sendLine(c.socket, "T|%s" % self.getClient(self.__a[k]["turn"]).name, 0.5)
+                        self.__server.sendLine(c.socket, 
+                                               ["M|chiudi", 
+                                                "T|%s" % self.getClient(self.__a[k]["turn"]).name], 
+                                               0.5)
         
     def createArena(self, c1, c2):
         for k in self.__a.keys():
@@ -112,8 +113,7 @@ class Core(object):
                 "turn": c2.uid,
                 "time": time.time()
                 }
-            self.__server.sendLine(c2.socket, "T|%s" % c2.name)
-            self.__server.sendLine(c2.socket, "M|%s" % self.__mmenu, 2)
+            self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu], 2)
         else:
             print "Client rientrato in Arena %s" % k
     

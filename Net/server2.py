@@ -2,6 +2,7 @@
 
 from core import Core
 from reactor import *
+from types import StringType, ListType
 import select, socket, sys, signal
 
 BUFSIZ = 1024
@@ -33,8 +34,15 @@ class Server(object):
         self.server.close()
     
     def sendLine(self, s, msg, t = 0):
-        msg = msg.replace("\r", "")
-        msg = msg.replace("\n", "")
+        if type(msg) is StringType:
+            msg = [msg]
+        clean_msg = []
+        for m in msg:
+            m = str(m)
+            m = m.replace("\r", "")
+            m = m.replace("\n", "")
+            clean_msg.append(m)
+        msg = DELIMETER.join(clean_msg)        
         reactor.callLater(t, s.send, msg + DELIMETER)
     
     def __start(self):
