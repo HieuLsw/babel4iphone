@@ -39,7 +39,7 @@ class Database(object):
     # High Functions Database
     
     def getNameByUid(self, uid):
-        r = self.select("name", "user", "uid='%s'" % uid)
+        r = self.select("name", "user", "id='%s'" % uid)
         if r:
             r = r[0]["name"]
         return r
