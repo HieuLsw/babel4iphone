@@ -5,26 +5,28 @@ from reactor import *
 from types import StringType, ListType
 import select, socket, sys, signal
 
+SHOST = "localhost"
+SPORT = 66666
 BUFSIZ = 1024
 DELIMETER = "\r\n"
 
 class Server(object):
     
-    def __init__(self, host = "localhost", port = 66666, backlog = 5):        
+    def __init__(self, host = SHOST, port = SPORT, backlog = 5):        
         try:
             self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.server.bind((host, port))
             self.server.listen(backlog)
+            print "Server up %s:%s" % (host, port)
         except socket.error, (value, message):
             if self.server:
                 self.server.close()
             print "Could not open socket: %s" % message
             sys.exit(1)
         
-        self.__core = Core(self)
         signal.signal(signal.SIGINT, self.sighandler) # ctrl-c
-        print "Server is up on %s:%s..." % (host, port)
+        self.__core = Core(self)
         self.__start()
     
     def sighandler(self, signum, frame):
@@ -63,8 +65,8 @@ class Server(object):
             
             for s in inputready:
                 if s == self.server:
-                    client, address = self.server.accept()
-                    self.__dispatch(client)
+                    c_sck, address = self.server.accept()
+                    self.__dispatch(c_sck)
                 elif s == sys.stdin:
                     junk = sys.stdin.readline()
                     running = 0
@@ -107,5 +109,4 @@ class Server(object):
 
 
 if __name__ == "__main__":
-    #Server("192.168.1.1")
     Server()

@@ -1,6 +1,6 @@
 import time
 
-# Class for callLater, step need called in main loop
+# Class for callLater, step() need called in main loop
 
 class Reactor(object):
     
