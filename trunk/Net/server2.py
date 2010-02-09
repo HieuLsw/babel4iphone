@@ -2,6 +2,7 @@
 
 from core import Core
 from reactor import *
+from utils import *
 from types import StringType, ListType
 import select, socket, sys, signal
 
@@ -18,11 +19,11 @@ class Server(object):
             self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.server.bind((host, port))
             self.server.listen(backlog)
-            print "Server up %s:%s" % (host, port)
+            print gettext("Server avviato [%s:%s]") % (host, port)
         except socket.error, (value, message):
             if self.server:
                 self.server.close()
-            print "Could not open socket: %s" % message
+            print gettext("Errore nell'avvio: %s") % message
             sys.exit(1)
         
         signal.signal(signal.SIGINT, self.sighandler) # ctrl-c
@@ -30,7 +31,7 @@ class Server(object):
         self.__start()
     
     def sighandler(self, signum, frame):
-        print "Shutting down server..."
+        print gettext("Arresto del server...")
         for s in self.__core.getSockets():
             s.close()
         self.server.close()
@@ -100,12 +101,12 @@ class Server(object):
                                 c1 = self.__core.getClientBySocket(s)
                                 self.__core.createArena(c1, c2)
                             else:
-                                self.sendLine(s, "E|Utente non connesso")
+                                self.sendLine(s, gettext("E|Utente non connesso"))
                         elif 'E' == m[0]:
                             c1 = self.__core.getClientBySocket(s)
-                            print "Echo %s: %s" % (c1.uid, m[1])
+                            print gettext("Echo %s: %s") % (c1.uid, m[1])
                         else:
-                            print "Not implemented: %s" % m
+                            print gettext("Comando non implementato: %s") % m
 
 
 if __name__ == "__main__":

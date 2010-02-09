@@ -11,7 +11,7 @@ class Core(object):
         
         self.__c = {}
         self.__a = {}
-        self.__mmenu = "Attack;Defende;Magics;Invocations;Items;Team;Settings"
+        self.__mmenu = gettext("Attack;Defende;Magics;Invocations;Items;Team;Settings")
     
     def getSockets(self):
         return [c.socket for c in self.__c.values()]
@@ -48,16 +48,16 @@ class Core(object):
         except Exception, e:
             print e
         if c:
-            print 'Add Client uid %s' % uid
+            print gettext("Aggiunto client uid %s") % uid
             self.setClientMap(uid, c)
-            self.__server.sendLine(s, "E|Connesso")
+            self.__server.sendLine(s, "E|%s" % gettext("Connesso"))
         else:
-            self.__server.sendLine(s, "E|Non sei registrato")
+            self.__server.sendLine(s, "E|%s" % gettext("Non sei registrato"))
     
     def delClientBySocket(self, s):
         #try:
         c = self.getClientBySocket(s)
-        print 'Del Client uid %s' % c.uid
+        print gettext("Cancellato client uid %s") % c.uid
         c.socket.close()
         self.delClientMap(c.uid)
         #except Exception, e:
@@ -105,15 +105,15 @@ class Core(object):
         for k in self.__a.keys():
             uids = k.split('|')
             if c1.uid in uids and c2.uid not in uids:
-                self.__server.sendLine(c2.socket, "E|Utente impegnato")
+                self.__server.sendLine(c2.socket, "E|%s" % gettext("Utente impegnato"))
                 return
             if c2.uid in uids and c1.uid not in uids:
-                self.__server.sendLine(c1.socket, "E|Utente impegnato")
+                self.__server.sendLine(c1.socket, "E|%s" % gettext("Utente impegnato"))
                 return
         
         k = '%s|%s' % (c1.uid, c2.uid)
         if not self.__a.has_key(k):
-            print "Create Arena %s" % k
+            print gettext("Creata arena %s") % k
             self.__a[k] = {
                 "turn": c2.uid,
                 "time": time.time()
@@ -121,8 +121,8 @@ class Core(object):
             self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu])
             self.__server.sendLine(c1.socket, ["T|%s" % c2.name, "M|chiudi"])
         else:
-            print "Client rientrato in Arena %s" % k
+            print gettext("Client rientrato nell'arena %s") % k
     
     def delArena(self, k):
         del self.__a[k]
-        print "Delete Arena %s" % k
+        print gettext("Cancellata arena %s") % k
