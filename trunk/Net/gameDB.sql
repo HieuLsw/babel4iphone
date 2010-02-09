@@ -74,4 +74,5 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`id`, `name`) VALUES
 ('U55555', 'Vito'),
 ('U66666', 'Caio'),
+('841846f7cfd7ec6b3de546a7956c271f3c1136df', 'Zorro'),
 ('6397D24E-299F-594E-BEE1-C1BBEA6C0B9E', 'Pino');

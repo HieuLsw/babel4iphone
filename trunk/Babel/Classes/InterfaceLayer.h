@@ -13,7 +13,6 @@
 	int sel;        // indice dell'elemento selezionato del menu corrente
 	int num;        // numero di item del menu corrente
 	bool turn;
-	bool menu;
 }
 
 -(void) initMenu:(NSArray *)menuitems;   // inizializza il menu "name"

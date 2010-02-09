@@ -50,7 +50,7 @@ class Core(object):
         if c:
             print gettext("Aggiunto client uid %s") % uid
             self.setClientMap(uid, c)
-            self.__server.sendLine(s, "E|%s" % gettext("Connesso"))
+            self.__server.sendLine(s, "N|%s" % name)
         else:
             self.__server.sendLine(s, "E|%s" % gettext("Non sei registrato"))
     
@@ -98,8 +98,7 @@ class Core(object):
                                                 "M|%s" % self.__mmenu])
                     else:
                         self.__server.sendLine(c.socket, 
-                                               ["T|%s" % self.getClient(self.__a[k]["turn"]).name,
-                                                "M|chiudi"])
+                                               "T|%s" % self.getClient(self.__a[k]["turn"]).name)
     
     def createArena(self, c1, c2):
         for k in self.__a.keys():
@@ -119,9 +118,10 @@ class Core(object):
                 "time": time.time()
                 }
             self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu])
-            self.__server.sendLine(c1.socket, ["T|%s" % c2.name, "M|chiudi"])
+            self.__server.sendLine(c1.socket, "T|%s" % c2.name)
         else:
             print gettext("Client rientrato nell'arena %s") % k
+            # mandargli il turno di ora a quello rientrato
     
     def delArena(self, k):
         del self.__a[k]

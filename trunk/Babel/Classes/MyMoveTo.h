@@ -6,7 +6,7 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "CCIntervalAction.h"
+/*#import "CCIntervalAction.h"
 //#import "CCDirector.h"
 //#import "CCCamera.h"
 #import "CGPointExtension.h"
@@ -16,4 +16,4 @@
 
 }
 
-@end
+@end*/

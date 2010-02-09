@@ -6,7 +6,7 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "MyMoveTo.h"
+/*#import "MyMoveTo.h"
 
 @implementation MyMoveTo
 
@@ -31,4 +31,4 @@
 	//[[layer camera] setEyeX:x eyeY:y eyeZ:CCCamera.getZEye];
 }
 
-@end
+@end*/
