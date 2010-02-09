@@ -1,145 +1,113 @@
 #!/usr/bin/python -O
 
-from twisted.internet import reactor
-from twisted.internet.protocol import Factory
-from twisted.protocols.basic import LineReceiver
-import time
+from core import Core
+from reactor import *
+from utils import *
+from types import StringType, ListType
+import select, socket, sys, signal
 
-## FUNC ##
+SHOST = "localhost"
+SPORT = 66666
+BUFSIZ = 1024
+DELIMETER = "\r\n"
 
-# da il successione elemento di una lista
-def next(l, e):
-    return l[(l.index(e) + 1) % len(l)]
-
-
-## SERVER ##
-
-# il socket riceve solo gli event e li indirizza al factory x attivare i comandi
-class ServerProtocol(LineReceiver):
+class Server(object):
     
-    def __init__(self):
-        self.uid = None
-        self.main_menu = ""
+    def __init__(self, host = SHOST, port = SPORT, backlog = 5):        
+        try:
+            self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server.bind((host, port))
+            self.server.listen(backlog)
+            print gettext("Server avviato [%s:%s]") % (host, port)
+        except socket.error, (value, message):
+            if self.server:
+                self.server.close()
+            print gettext("Errore nell'avvio: %s") % message
+            sys.exit(1)
+        
+        signal.signal(signal.SIGINT, self.sighandler) # ctrl-c
+        self.__core = Core(self)
+        self.__start()
     
-    def connectionMade(self):
-        pass
+    def sighandler(self, signum, frame):
+        print gettext("Arresto del server...")
+        for s in self.__core.getSockets():
+            s.close()
+        self.server.close()
     
-    def lineReceived(self, data):
-        data = data.split("\r\n")
-        for msg in data:
-            m = msg.split('|')
-            if 'U' == m[0]:
-                self.factory.addClient(m[1], self)
-            elif 'F' == m[0]:
-                self.factory.startFight(self.uid, m[1])
-            elif 'E' == m[0]:
-                print m[1]
-            elif 'M' == m[0]:
-                self.factory.menu(self, int(m[1]))
-            else:
-                print "No used: %s" % m
+    def sendLine(self, s, msg, t = 0):
+        if type(msg) is StringType:
+            msg = [msg]
+        clean_msg = []
+        for m in msg:
+            m = str(m)
+            m = m.replace("\r", "")
+            m = m.replace("\n", "")
+            clean_msg.append(m)
+        msg = DELIMETER.join(clean_msg)        
+        reactor.callLater(t, s.send, msg + DELIMETER)
     
-    def connectionLost(self , reason):
-        self.factory.delClient(self.uid)
-
-
-class ServerFactory(Factory):
-    protocol = ServerProtocol
+    def __start(self):
+        self.__core.clearClientsMap()
+        
+        running = 1
+        
+        while running:
+            try:
+                inputs = [self.server, sys.stdin]
+                scks = self.__core.getSockets()
+                inputs.extend(scks)
+                inputready, outputready, exceptready = select.select(inputs, scks, [])
+            except select.error, e:
+                break
+            except socket.error, e:
+                break
+            
+            for s in inputready:
+                if s == self.server:
+                    c_sck, address = self.server.accept()
+                    self.__dispatch(c_sck)
+                elif s == sys.stdin:
+                    junk = sys.stdin.readline()
+                    running = 0
+                else:
+                    try:
+                        self.__dispatch(s)
+                    except socket.error, e:
+                        self.__core.delClientBySocket(s)
+            self.__core.mainLoop()
+            reactor.step()
+        self.server.close()
     
-    def __init__(self):
-        self.clients = {}
-        self.arena = {}
-        self.main_menu = "Attack;Defende;Magics;Invocations;Items;Team;Settings"
-    
-    def addClient(self, uid, client):
-        if not self.clients.has_key(uid):
-            client.uid = uid
-            self.clients[uid] = client
-            print "Add user %s." % uid
+    def __dispatch(self, s):
+        data = None
+        try:
+            data = s.recv(BUFSIZ).split(DELIMETER)[:-1]
+        except:
+            pass
+        if not data:
+            self.__core.delClientBySocket(s)
         else:
-            print "User %s exists."
-    
-    def delClient(self, uid):
-        if self.clients.has_key(uid):
-            del self.clients[uid]
-            print "Delete %s." % uid
-    
-    def sendAll(self, message, time = 0):
-        for uid, client in self.clients.items():
-            reactor.callLater(time, client.sendLine, message)
-    
-    def send(self, uid, message, time = 0):
-        if self.clients.has_key(uid):
-            reactor.callLater(time, self.clients[uid].sendLine, message)
-        else:
-            print "No send msg, uid %s not exist." % uid
-    
-    def mainLoop(self):
-        arena_keys = self.arena.keys()
-        for k in arena_keys:
-            players =  k.split('|')
-            t = self.arena[k]["time"]
-            if time.time() - t > 20:
-                self.arena[k]["turn"] = next(players, self.arena[k]["turn"])
-                self.arena[k]["time"] = time.time()
-                for uid in players:
-                    if self.clients.has_key(uid):
-                        if uid == self.arena[k]["turn"]:
-                            self.clients[uid].main_menu = ""
-                            self.send(uid, "T|%s" % self.getData("name=%s" % self.arena[k]["turn"]))
-                            self.send(uid, "M|%s" % self.main_menu, 2)
+            for msg in data:
+                if msg:
+                    m = msg.split('|')
+                    if m:
+                        if 'U' == m[0]:
+                            self.__core.addClient(m[1], s)
+                        elif 'F' == m[0]:
+                            c2 = self.__core.getClient(m[1])
+                            if c2:
+                                c1 = self.__core.getClientBySocket(s)
+                                self.__core.createArena(c1, c2)
+                            else:
+                                self.sendLine(s, gettext("E|Utente non connesso"))
+                        elif 'E' == m[0]:
+                            c1 = self.__core.getClientBySocket(s)
+                            print gettext("Echo %s: %s") % (c1.uid, m[1])
                         else:
-                            self.send(uid, "M|chiudi")
-                            self.send(uid, "T|%s" % self.getData("name=%s" % self.arena[k]["turn"]), 0.5)
-                    else:
-                        del self.arena[k]
-                        print "Delete arena %s" % k
-                        self.send(next(players, uid), "T|fine")
-                        break
-        reactor.callLater(1, self.mainLoop)
-    
-    # simula lettura da db
-    def getData(self, query):
-        result = ""
-        args = query.split('=')
-        if "name" == args[0]:
-            if len(args[1]) > 10:
-                result = "IPhone"
-            else:
-                result = "Python"
-        elif "magics" == args[0]:
-            if len(args[1]) > 10:
-                result = "Fire:25;Water:25"
-            else:
-                result = "Fire:25"
-        return result
-    
-    def menu(self, client, i):
-        result = ""
-        if not client.main_menu:
-            items = self.main_menu.split(';')
-            client.main_menu = items[i].lower()
-            result = self.getData("%s=%s" % (client.main_menu, client.uid))
-        else:
-            print self.getData("%s=%s" % (client.main_menu, client.uid)).split(';')[i]
-            client.main_menu = ""
-            result = self.main_menu
-        self.send(client.uid, "M|%s" % result, 0.5)
-    
-    def startFight(self, uid1, uid2):
-        key = '%s|%s' % (uid1, uid2)
-        if not self.arena.has_key(key):
-            print "Create arena %s" % key
-            self.arena[key] = {
-                "turn": uid2,
-                "time": time.time()
-                }
-            self.send(uid2, "T|%s" % self.getData("name=%s" % uid2))
-            self.send(uid2, "M|%s" % self.main_menu, 2)
+                            print gettext("Comando non implementato: %s") % m
 
 
-if __name__=="__main__":
-    f = ServerFactory()
-    reactor.listenTCP(66666, f)
-    reactor.callLater(1, f.mainLoop)
-    reactor.run()
+if __name__ == "__main__":
+    Server()
