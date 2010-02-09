@@ -6,7 +6,7 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "MenuLayer.h"
+/*#import "MenuLayer.h"
 
 @implementation MenuLayer
 
@@ -35,4 +35,4 @@
 	[super dealloc];
 }
 
-@end
+@end*/

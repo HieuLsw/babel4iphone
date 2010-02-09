@@ -6,11 +6,11 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "CoreFunctions.h"
+/*#import "CoreFunctions.h"
 
 @implementation CoreFunctions
 {
 
 }
 
-@end
+@end*/

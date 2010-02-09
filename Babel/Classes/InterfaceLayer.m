@@ -21,7 +21,6 @@
 	if ((self = [super init]))
 	{
 		turn = NO;
-		menu = NO;
 		
 		CCSprite *backmenu = [CCSprite spriteWithFile:@"back.png"];
 		[backmenu setOpacity:100];
@@ -33,7 +32,7 @@
 		CCMenuItemImage *a2 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(downCallback:)];
 		CCMenuItemImage *a3 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(leftCallback:)];
 		CCMenuItemImage *a4 = [CCMenuItemImage itemFromNormalImage:@"arrow2.png" selectedImage:@"arrow.png" target:self selector:@selector(rightCallback:)];		
-				
+		
 		[a1 setRotation:-90];
 		[a2 setRotation:90];
 		[a3 setRotation:-180];
@@ -49,14 +48,14 @@
 		[controller setVisible:NO];
 		
 		CGSize s = [[CCDirector sharedDirector] winSize];
-		CCLabel *lturn = [CCLabel labelWithString:@"" dimensions:CGSizeMake(s.width, 44) alignment:UITextAlignmentCenter fontName:@"sr" fontSize:24];
+		CCLabel *lturn = [CCLabel labelWithString:@"" dimensions:CGSizeMake(s.width, 44) alignment:UITextAlignmentCenter fontName:@"Lucon1" fontSize:18];
 		[lturn setPosition:ccp(s.width/2, s.height/2)];
-		id seq = [CCSequence actions:[CCFadeIn actionWithDuration:1.0], [CCFadeOut actionWithDuration:1.0], nil];
+		id seq = [CCSequence actions:[CCFadeOut actionWithDuration:0.5], [CCFadeIn actionWithDuration:0.5], nil];
 		[lturn runAction:[CCRepeatForever actionWithAction:seq]];
 		
 		[self addChild:backmenu z:0  tag:0];
-		[self addChild:controller z:0 tag:2];
 		[self addChild:lturn z:0 tag:1];
+		[self addChild:controller z:0 tag:2];
 	}
 	
 	return self;
@@ -64,11 +63,11 @@
 
 -(void) initMenu:(NSArray *)menuitems
 {
-	if (turn && !menu)
+	CCMenu *controller = (CCMenu *)[self getChildByTag:2];
+	if (turn && ![controller visible])
 	{
 		CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
 		[backmenu setVisible:YES];
-		CCMenu *controller = (CCMenu *)[self getChildByTag:2];
 		[controller setVisible:YES];
 		
 		int y = 55;
@@ -81,15 +80,14 @@
 			[self configItem:num + SHIFT move:0];
 			num += 1;
 		}
-		
-		menu = YES;
 	}
 }
 
 -(void) closeMenu
 {
-	if (menu)
-	{		
+	CCMenu *controller = (CCMenu *)[self getChildByTag:2];
+	if ([controller visible])
+	{
 		for (int i = 0 + SHIFT; i < num + SHIFT; i++) // clean
 			[self removeChildByTag:i cleanup:TRUE];
 		
@@ -98,10 +96,7 @@
 		
 		CCSprite *backmenu = (CCSprite *)[self getChildByTag:0];
 		[backmenu setVisible:NO];
-		CCMenu *controller = (CCMenu *)[self getChildByTag:2];
 		[controller setVisible:NO];
-		
-		menu = NO;
 	}
 }
 
@@ -122,12 +117,24 @@
 
 -(void) setTurn:(NSString *)name
 {
-	[self closeMenu];
-	
 	CCLabel *lb = (CCLabel *)[self getChildByTag:1];
-	[lb setString:[name stringByAppendingString:@" is ready!!!"]];
-	
-	turn = !turn;
+	if ([name isEqualToString:@"fine"])
+	{
+		turn = NO;
+		[self closeMenu];
+		[lb setString:@"Fine del combattimento"];
+	}
+	else if ([[[SharedData Initialize] name] isEqualToString:name])
+	{
+		turn = YES;
+		[lb setString:@"E' il tuo turno"];
+	}
+	else
+	{
+		turn = NO;
+		[self closeMenu];
+		[lb setString:[@"E' il turno di " stringByAppendingString:name]];
+	}
 }
 
 -(void) upCallback:(id)sender

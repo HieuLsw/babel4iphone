@@ -14,11 +14,15 @@
 
 @implementation SharedData
 
+@synthesize name;
+
 -(void) dealloc
 {	
 	[inputStream release];
 	[outputStream release];
 	[DELIMETER release];
+	
+	[name release];
 	
 	NSLog(@"------------------- RELEASE SINGETON DATA ----------------------");
 	
@@ -38,7 +42,6 @@
 	CFStreamCreatePairWithSocketToCFHost(NULL, host, PORT, &readStream, &writeStream);
 	CFRelease(host);
 	
-	NSLog(@"%@", host);
 	inputStream = [(NSInputStream *)readStream autorelease];
 	outputStream = [(NSOutputStream *)writeStream autorelease];
 	[inputStream retain];
@@ -112,7 +115,7 @@
             //[stream release]; // libero all'uscita
 			break;
 		default:
-			event = @"<< Unknown >>";
+			event = @"<< Sconosciuto >>";
 	}
 	
 	NSLog(@"%@ : %@", io, event);
@@ -123,27 +126,28 @@
 	id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 	NSArray *arr = [msg componentsSeparatedByString:@"|"];
 	
-	// MENU
-	if ([[arr objectAtIndex:0] isEqualToString:@"M"])
+	// INIT NAME (for turn)
+	if ([[arr objectAtIndex:0] isEqualToString:@"N"])
 	{
-		if ([[arr objectAtIndex:1] isEqualToString:@"chiudi"])
-			[layer closeMenu];
-		else
-		{
-			NSArray *menuitems = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
-			[layer initMenu:menuitems];
-		}
+		name = [[NSString alloc] initWithString:[arr objectAtIndex:1]];
+		NSLog(@"Connesso con nome %@", [arr objectAtIndex:1]);
+	}
+	// MENU
+	else if ([[arr objectAtIndex:0] isEqualToString:@"M"])
+	{
+		NSArray *menuitems = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
+		[layer initMenu:menuitems];
 		NSLog(@"Menu %@", [arr objectAtIndex:1]);
 	}
 	// TURN
 	else if ([[arr objectAtIndex:0] isEqualToString:@"T"])
 	{
 		[layer setTurn:[arr objectAtIndex:1]];
-		NSLog(@"E' il turno di %@", [arr objectAtIndex:1]);
+		NSLog(@"Turno: %@", [arr objectAtIndex:1]);
 	}
 	// NOT IMPLEMENTED
 	else
-		NSLog(@"Not implemented server msg : %@", arr);
+		NSLog(@"Messaggio non implementato : %@", arr);
 }
 
 -(void) menu:(int)i

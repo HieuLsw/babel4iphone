@@ -6,11 +6,11 @@
 //  Copyright 2009 __MyCompanyName__. All rights reserved.
 //
 
-#import "cocos2d.h"
+//#import "cocos2d.h"
 
-@interface CoreFunctions : NSObject
+/*@interface CoreFunctions : NSObject
 {
 
 }
 
-@end
+@end*/
