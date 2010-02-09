@@ -42,13 +42,17 @@ class Core(object):
     def addClient(self, uid, s):
         c = None
         try:
-            c = Client(s, uid, self.__db.getNameByUid(uid))
+            name = self.__db.getNameByUid(uid)
+            if name:
+                c = Client(s, uid, name)
         except Exception, e:
             print e
         if c:
             print 'Add Client uid %s' % uid
             self.setClientMap(uid, c)
-            self.__server.sendLine(s, "E|Connected")
+            self.__server.sendLine(s, "E|Connesso")
+        else:
+            self.__server.sendLine(s, "E|Non sei registrato")
     
     def delClientBySocket(self, s):
         #try:
@@ -89,13 +93,14 @@ class Core(object):
                 for c in clients:
                     if c.uid == self.__a[k]["turn"]:
                         #self.clients[uid].main_menu = ""
-                        self.__server.sendLine(c.socket, ["T|%s" % c.name, "M|%s" % self.__mmenu], 2)
+                        self.__server.sendLine(c.socket, 
+                                               ["T|%s" % c.name, 
+                                                "M|%s" % self.__mmenu])
                     else:
                         self.__server.sendLine(c.socket, 
-                                               ["M|chiudi", 
-                                                "T|%s" % self.getClient(self.__a[k]["turn"]).name], 
-                                               0.5)
-        
+                                               ["T|%s" % self.getClient(self.__a[k]["turn"]).name,
+                                                "M|chiudi"])
+    
     def createArena(self, c1, c2):
         for k in self.__a.keys():
             uids = k.split('|')
@@ -113,7 +118,8 @@ class Core(object):
                 "turn": c2.uid,
                 "time": time.time()
                 }
-            self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu], 2)
+            self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu])
+            self.__server.sendLine(c1.socket, ["T|%s" % c2.name, "M|chiudi"])
         else:
             print "Client rientrato in Arena %s" % k
     
