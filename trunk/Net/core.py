@@ -10,7 +10,6 @@ class Core(object):
         self.__db = Database()
         
         self.__c = {}
-        self.__a = {}
         self.__mmenu = gettext("Attack;Defende;Magics;Invocations;Items;Team;Settings")
     
     def getSockets(self):
@@ -64,11 +63,12 @@ class Core(object):
         #    print e
     
     def mainLoop(self):
-        for k in self.__a.keys():
-            t = self.__a[k]["time"]
+        arena = self.__db.getAllArena()
+        for a in arena:
+            t = a["time"]
             if time.time() - t > 15: # change turn
                 mode = 0
-                uids = k.split('|')
+                uids = [a["user_id1"], a["user_id2"]]
                 clients = [self.getClient(u) for u in uids]
                 other = clients[0]
                 
@@ -81,48 +81,44 @@ class Core(object):
                 if mode < 3:
                     if mode > 0:
                         self.__server.sendLine(other.socket, "T|fine")
-                        self.delArena(k)
+                        self.delArena(a)
                         return
                 else:
-                    self.delArena(k)
+                    self.delArena(a)
                     return
                 
-                self.__a[k]["turn"] = next(uids, self.__a[k]["turn"])
-                self.__a[k]["time"] = time.time()
+                a["turn"] = next(uids, a["turn"])
+                a["time"] = time.time()
+                self.__db.updateArena(a)
                 
                 for c in clients:
-                    if c.uid == self.__a[k]["turn"]:
-                        #self.clients[uid].main_menu = ""
+                    if c.uid == a["turn"]:
                         self.__server.sendLine(c.socket, 
                                                ["T|%s" % c.name, 
                                                 "M|%s" % self.__mmenu])
                     else:
                         self.__server.sendLine(c.socket, 
-                                               "T|%s" % self.getClient(self.__a[k]["turn"]).name)
+                                               "T|%s" % self.getClient(a["turn"]).name)
     
     def createArena(self, c1, c2):
-        for k in self.__a.keys():
-            uids = k.split('|')
-            if c1.uid in uids and c2.uid not in uids:
-                self.__server.sendLine(c2.socket, "E|%s" % gettext("Utente impegnato"))
-                return
-            if c2.uid in uids and c1.uid not in uids:
-                self.__server.sendLine(c1.socket, "E|%s" % gettext("Utente impegnato"))
-                return
+        tmp = self.__db.getArenaByUser(c1.uid)
+        if tmp and c2.uid != tmp["user_id1"] and c2.uid != tmp["user_id2"]:
+            self.__server.sendLine(c1.socket, "E|%s" % gettext("Sei impegnato con un altro utente"))
+            return
+        tmp = self.__db.getArenaByUser(c2.uid)
+        if tmp and c1.uid != tmp["user_id1"] and c1.uid != tmp["user_id2"]:
+            self.__server.sendLine(c1.socket, "E|%s" % gettext("Utente impegnato"))
+            return
         
-        k = '%s|%s' % (c1.uid, c2.uid)
-        if not self.__a.has_key(k):
-            print gettext("Creata arena %s") % k
-            self.__a[k] = {
-                "turn": c2.uid,
-                "time": time.time()
-                }
-            self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu])
-            self.__server.sendLine(c1.socket, "T|%s" % c2.name)
+        if not self.__db.getArena(c1.uid, c2.uid):
+            if self.__db.createArena(c1.uid, c2.uid, c2.uid, time.time()):
+                print gettext("Creata arena %s|%s") % (c1.uid, c2.uid)
+                self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu])
+                self.__server.sendLine(c1.socket, "T|%s" % c2.name)
         else:
-            print gettext("Client rientrato nell'arena %s") % k
+            print gettext("Client rientrato nell'arena %s|%s") % (c1.uid, c2.uid)
             # mandargli il turno di ora a quello rientrato
     
-    def delArena(self, k):
-        del self.__a[k]
-        print gettext("Cancellata arena %s") % k
+    def delArena(self, a):
+        if self.__db.delArena(a):
+            print gettext("Cancellata arena id %s|%s") % (a["user_id1"], a["user_id2"])
