@@ -103,6 +103,8 @@ class Server(object):
                         elif 'E' == m[0]:
                             c1 = self.__core.getClientBySocket(s)
                             print gettext("Echo %s: %s") % (c1.uid, m[1])
+                        elif 'M' == m[0]:
+                            print "Richisto menu: %s" % m[1]
                         else:
                             print gettext("Comando non implementato: %s") % m
 

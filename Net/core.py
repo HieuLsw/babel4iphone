@@ -8,8 +8,8 @@ class Core(object):
     def __init__(self, server):
         self.__server = server
         self.__db = Database()
-        
         self.__c = {}
+        
         self.__mmenu = gettext("Attack;Defende;Magics;Invocations;Items;Team;Settings")
     
     def getSockets(self):

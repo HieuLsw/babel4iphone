@@ -130,7 +130,7 @@
 	if ([[arr objectAtIndex:0] isEqualToString:@"N"])
 	{
 		name = [[NSString alloc] initWithString:[arr objectAtIndex:1]];
-		NSLog(@"Connesso con nome %@", [arr objectAtIndex:1]);
+		NSLog(@"Connesso come: %@", [arr objectAtIndex:1]);
 	}
 	// MENU
 	else if ([[arr objectAtIndex:0] isEqualToString:@"M"])
@@ -145,9 +145,29 @@
 		[layer setTurn:[arr objectAtIndex:1]];
 		NSLog(@"Turno: %@", [arr objectAtIndex:1]);
 	}
+	else if ([[arr objectAtIndex:0] isEqualToString:@"E"])
+	{
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Avviso" message:[arr objectAtIndex:1] delegate:self cancelButtonTitle:@"Annulla" otherButtonTitles:@"Ok", nil];
+		[alert show];
+		[alert release];
+		NSLog(@"Echo... %@", [arr objectAtIndex:1]);
+	}
 	// NOT IMPLEMENTED
 	else
 		NSLog(@"Messaggio non implementato : %@", arr);
+}
+
+-(void) alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+	// the user clicked one of the OK/Cancel buttons
+	if (buttonIndex == 1)
+	{
+		NSLog(@"Ok");
+	}
+	else
+	{
+		NSLog(@"Cancel");
+	}
 }
 
 -(void) menu:(int)i

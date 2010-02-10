@@ -63,6 +63,7 @@
 	
 	[[CCDirector sharedDirector] runWithScene: scene];
 	[[SharedData Initialize] connectToServer];
+	[[SharedData Initialize] sendToServer:@"F|U55555"];
 }
 
 -(void) applicationWillResignActive:(UIApplication *)application

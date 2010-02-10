@@ -70,7 +70,7 @@
 		[backmenu setVisible:YES];
 		[controller setVisible:YES];
 		
-		int y = 55;
+		int y = 56;
 		for (NSString *item in menuitems)
 		{
 			CCLabel *lb = [CCLabel labelWithString:item dimensions:CGSizeMake(120, 28) alignment:UITextAlignmentLeft fontName:@"Lucon1" fontSize:14];
