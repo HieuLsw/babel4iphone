@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: 09 feb, 2010 at 06:12 PM
+-- Generato il: 10 feb, 2010 at 12:29 PM
 -- Versione MySQL: 5.0.88
 -- Versione PHP: 5.2.9
 
@@ -18,6 +18,26 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 -- Database: `gameDB`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `arena`
+--
+
+CREATE TABLE IF NOT EXISTS `arena` (
+  `id` int(11) NOT NULL auto_increment,
+  `user_id1` varchar(50) collate latin1_general_cs NOT NULL,
+  `user_id2` varchar(50) collate latin1_general_cs NOT NULL,
+  `turn` varchar(50) collate latin1_general_cs NOT NULL,
+  `time` double NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=15 ;
+
+--
+-- Dump dei dati per la tabella `arena`
+--
+
 
 -- --------------------------------------------------------
 
@@ -45,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `character` (
 
 CREATE TABLE IF NOT EXISTS `collection` (
   `id` int(11) NOT NULL auto_increment,
-  `user_id` int(11) NOT NULL,
+  `user_id` varchar(50) collate latin1_general_cs NOT NULL,
   `char_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=1 ;
@@ -74,5 +94,4 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`id`, `name`) VALUES
 ('U55555', 'Vito'),
 ('U66666', 'Caio'),
-('841846f7cfd7ec6b3de546a7956c271f3c1136df', 'Zorro'),
 ('6397D24E-299F-594E-BEE1-C1BBEA6C0B9E', 'Pino');
