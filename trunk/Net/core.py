@@ -46,21 +46,24 @@ class Core(object):
                 c = Client(s, uid, name)
         except Exception, e:
             print e
-        if c:
-            print gettext("Aggiunto client uid %s") % uid
+        
+        if self.getClient(uid): # lo sleep potrebbe aspettare a ripulire il vecchio socket in caso di rilogin
+            self.__server.sendLine(s, "E|%s" % gettext("Aspetta 2 secondi per riloggare"))
+        elif c:
             self.setClientMap(uid, c)
+            print gettext("Aggiunto client uid %s") % uid
             self.__server.sendLine(s, "N|%s" % name)
         else:
             self.__server.sendLine(s, "E|%s" % gettext("Non sei registrato"))
     
     def delClientBySocket(self, s):
-        #try:
         c = self.getClientBySocket(s)
-        print gettext("Cancellato client uid %s") % c.uid
-        c.socket.close()
-        self.delClientMap(c.uid)
-        #except Exception, e:
-        #    print e
+        if c:
+            c.socket.close()
+            self.delClientMap(c.uid)
+            print gettext("Cancellato client uid %s") % c.uid
+        else:
+            s.close()
     
     def mainLoop(self):
         arena = self.__db.getAllArena()
@@ -101,23 +104,38 @@ class Core(object):
                                                "T|%s" % self.getClient(a["turn"]).name)
     
     def createArena(self, c1, c2):
+        if not c2:
+            self.__server.sendLine(c1.socket, gettext("E|Utente non connesso"))
+            return
+        
+        mode = 0
         tmp = self.__db.getArenaByUser(c1.uid)
         if tmp and c2.uid != tmp["user_id1"] and c2.uid != tmp["user_id2"]:
             self.__server.sendLine(c1.socket, "E|%s" % gettext("Sei impegnato con un altro utente"))
             return
+        else:
+            mode += 1
         tmp = self.__db.getArenaByUser(c2.uid)
         if tmp and c1.uid != tmp["user_id1"] and c1.uid != tmp["user_id2"]:
             self.__server.sendLine(c1.socket, "E|%s" % gettext("Utente impegnato"))
             return
+        else:
+            mode += 2
         
-        if not self.__db.getArena(c1.uid, c2.uid):
+        arena = self.__db.getArena(c1.uid, c2.uid)
+        if not arena:
             if self.__db.createArena(c1.uid, c2.uid, c2.uid, time.time()):
                 print gettext("Creata arena %s|%s") % (c1.uid, c2.uid)
                 self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu])
                 self.__server.sendLine(c1.socket, "T|%s" % c2.name)
-        else:
+                # inviare ai 2 anche tutti i dati del combattimento
+        elif mode >= 3:
+            msgs = ["T|%s" % self.getClient(arena["turn"]).name]
+            if c1.uid == arena["turn"]:
+                msgs.append("M|%s" % self.__mmenu)
+            self.__server.sendLine(c1.socket, msgs)
             print gettext("Client rientrato nell'arena %s|%s") % (c1.uid, c2.uid)
-            # mandargli il turno di ora a quello rientrato
+            # mandargli i dati e il turno di ora a quello rientrato da arena
     
     def delArena(self, a):
         if self.__db.delArena(a):
