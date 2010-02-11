@@ -1,6 +1,8 @@
 from twisted.internet import reactor
+from twisted.internet.threads import deferToThread
 from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
+from gui import *
 import random
 
 class ClientProtocol(LineReceiver):
@@ -50,6 +52,7 @@ def loop(f):
 
 
 if __name__=="__main__":
+    deferToThread(initGUI)
     f = ClientFactory()
     reactor.connectTCP('localhost', 66666, f)
     reactor.callLater(1, loop, f)

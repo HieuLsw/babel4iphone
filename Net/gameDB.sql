@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generato il: 10 feb, 2010 at 12:29 PM
+-- Generato il: 11 feb, 2010 at 12:50 PM
 -- Versione MySQL: 5.0.88
 -- Versione PHP: 5.2.9
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `arena` (
   `turn` varchar(50) collate latin1_general_cs NOT NULL,
   `time` double NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=15 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=51 ;
 
 --
 -- Dump dei dati per la tabella `arena`
@@ -49,13 +49,20 @@ CREATE TABLE IF NOT EXISTS `character` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(50) collate latin1_general_cs NOT NULL,
   `race` varchar(50) collate latin1_general_cs NOT NULL,
+  `atk` int(11) NOT NULL,
+  `def` int(11) NOT NULL,
+  `matk` int(11) NOT NULL,
+  `mdef` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=3 ;
 
 --
 -- Dump dei dati per la tabella `character`
 --
 
+INSERT INTO `character` (`id`, `name`, `race`, `atk`, `def`, `matk`, `mdef`) VALUES
+(1, 'Dan', 'Umano', 1000, 300, 100, 600),
+(2, 'Bill', 'Umano', 700, 600, 50, 1000);
 
 -- --------------------------------------------------------
 
@@ -67,13 +74,24 @@ CREATE TABLE IF NOT EXISTS `collection` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` varchar(50) collate latin1_general_cs NOT NULL,
   `char_id` int(11) NOT NULL,
+  `team` tinyint(1) NOT NULL default '0',
+  `level` int(11) NOT NULL default '1',
+  `exp` int(11) NOT NULL,
+  `hp` int(11) NOT NULL default '10',
+  `mp` int(11) NOT NULL default '5',
+  `time` double NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs AUTO_INCREMENT=5 ;
 
 --
 -- Dump dei dati per la tabella `collection`
 --
 
+INSERT INTO `collection` (`id`, `user_id`, `char_id`, `team`, `level`, `exp`, `hp`, `mp`, `time`) VALUES
+(1, 'U55555', 1, 1, 3, 0, 10, 5, 0),
+(2, 'U55555', 2, 1, 1, 0, 10, 5, 0),
+(3, 'U66666', 1, 0, 1, 0, 10, 5, 0),
+(4, 'U66666', 2, 1, 2, 0, 10, 5, 0);
 
 -- --------------------------------------------------------
 
