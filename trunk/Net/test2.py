@@ -20,7 +20,7 @@ class ClientProtocol(LineReceiver):
             try:
                 print cocos.director.director.scene.get("interface").label
             except:
-                pass
+                print "No scene"
 
             print msg
     
