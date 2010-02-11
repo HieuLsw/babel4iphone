@@ -16,22 +16,22 @@ class InterfaceLayer(cocos.layer.Layer):
     def __init__(self):
         super(InterfaceLayer, self).__init__()
                 
-        label = cocos.text.Label('test',
+        self.label = cocos.text.Label('test',
             font_name='Arial',
             font_size = 16,
             anchor_x = 'center', anchor_y = 'center')
-        label.position = 240, 160
+        self.label.position = 240, 160
         
-        label.do(cocos.actions.Repeat(
+        self.label.do(cocos.actions.Repeat(
                 cocos.actions.Sequence(cocos.actions.FadeOut(0.5), cocos.actions.FadeIn(0.5))
                 ))
-        self.add(label)
+        self.add(self.label)
         
-        backmenu = cocos.sprite.Sprite("back.png")
-        backmenu.position = 240, 160
-        backmenu.opacity = 100
-        backmenu.position = backmenu.width / 2 + 4, backmenu.height / 2 + 4
-        self.add(backmenu)
+        self.backmenu = cocos.sprite.Sprite("back.png")
+        self.backmenu.position = 240, 160
+        self.backmenu.opacity = 100
+        self.backmenu.position = self.backmenu.width / 2 + 4, self.backmenu.height / 2 + 4
+        self.add(self.backmenu)
         #[backmenu setVisible:NO];
     
     def on_key_release(self, keys, mod):
@@ -52,8 +52,8 @@ def initGUI():
     mlayer = InterfaceLayer()
     
     main_scene = cocos.scene.Scene()
-    main_scene.add(glayer, z = 0)
-    main_scene.add(mlayer, z = 1)
+    main_scene.add(glayer, z = 0, name = "game")
+    main_scene.add(mlayer, z = 1, name = "interface")
     
     cocos.director.director.run(main_scene)
     if reactor.running:

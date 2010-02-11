@@ -17,6 +17,11 @@ class ClientProtocol(LineReceiver):
     def lineReceived(self, data):
         data = data.split("\r\n")
         for msg in data:
+            try:
+                print cocos.director.director.scene.get("interface").label
+            except:
+                pass
+
             print msg
     
     def connectionLost(self , reason):
