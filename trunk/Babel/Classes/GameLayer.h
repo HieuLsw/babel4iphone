@@ -13,4 +13,7 @@
 
 }
 
+-(void) addMyCharacter:(NSArray *)attr position:(int)p;
+-(void) addEnemyCharacter:(NSArray *)attr position:(int)p;
+
 @end
