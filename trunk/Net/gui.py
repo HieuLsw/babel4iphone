@@ -1,6 +1,7 @@
 from twisted.internet import reactor
 import cocos
 from pyglet.window import key
+import threading
 
 class GameLayer(cocos.layer.Layer):
     
@@ -12,14 +13,16 @@ class GameLayer(cocos.layer.Layer):
 
 class InterfaceLayer(cocos.layer.Layer):    
     is_event_handler = True
+    lock = threading.Lock()
     
     def __init__(self):
         super(InterfaceLayer, self).__init__()
-                
-        self.label = cocos.text.Label('test',
-            font_name='Arial',
+        self.name = None
+        
+        self.label = cocos.text.Label("",
+            font_name="Arial",
             font_size = 16,
-            anchor_x = 'center', anchor_y = 'center')
+            anchor_x = "center", anchor_y = "center")
         self.label.position = 240, 160
         
         self.label.do(cocos.actions.Repeat(
@@ -31,8 +34,8 @@ class InterfaceLayer(cocos.layer.Layer):
         self.backmenu.position = 240, 160
         self.backmenu.opacity = 100
         self.backmenu.position = self.backmenu.width / 2 + 4, self.backmenu.height / 2 + 4
+        self.backmenu.visible = False
         self.add(self.backmenu)
-        #[backmenu setVisible:NO];
     
     def on_key_release(self, keys, mod):
         if keys == key.LEFT:
@@ -43,6 +46,28 @@ class InterfaceLayer(cocos.layer.Layer):
             print "up"
         elif keys == key.DOWN:
             print "down"
+    
+    def setName(self, n):
+        self.name = n
+    
+    def update_label(self, text):
+        self.lock.acquire()
+        self.label.element.text = text
+        self.lock.release()
+    
+    def setTurn(self, n):
+        if n != self.name:
+            self.closeMenu()
+            self.update_label("E` il turno di %s" % n)
+        else:
+            self.update_label("E` il tuo turno")
+            self.initMenu()
+    
+    def initMenu(self):
+        self.backmenu.visible = True
+    
+    def closeMenu(self):
+        self.backmenu.visible = False
 
 
 def initGUI():

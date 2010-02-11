@@ -9,7 +9,6 @@ class ClientProtocol(LineReceiver):
     
     def __init__(self):
         self.username = "U66666"
-        self.name = None
     
     def connectionMade(self):
         self.factory.client = self
@@ -18,22 +17,23 @@ class ClientProtocol(LineReceiver):
     def lineReceived(self, data):
         data = data.split("\r\n")
         for msg in data:
-            try:
-                print cocos.director.director.scene.get("interface").label
-            except:
-                print "No scene"
-            
             if msg:
                 m = msg.split('|')
                 if m:
-                    if 'N' == m[0]:
-                        self.name = m[1]
-                        print "Mio nome %s" % m[1]
-                    elif 'E' == m[0]:
-                        print "Echo: %s" % m[1]
-                    else:
-                        print "Comando non implementato: %s" % m
-    
+                    try:
+                        if 'N' == m[0]:
+                            cocos.director.director.scene.get("interface").setName(m[1])
+                            print "Mio nome %s" % m[1]
+                        elif 'E' == m[0]:
+                            print "Echo: %s" % m[1]
+                            cocos.director.director.scene.get("interface").update_label(m[1])
+                        elif 'T' == m[0]:
+                            cocos.director.director.scene.get("interface").setTurn(m[1])
+                        else:
+                            print "Comando non implementato: %s" % m
+                    except:
+                        pass
+        
     def connectionLost(self , reason):
         if reactor.running:
             print "Server down."
