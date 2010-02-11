@@ -123,7 +123,6 @@
 
 -(void) __dispatch:(NSString *)msg
 {
-	id layer = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 	NSArray *arr = [msg componentsSeparatedByString:@"|"];
 	
 	// INIT NAME (for turn)
@@ -135,16 +134,44 @@
 	// MENU
 	else if ([[arr objectAtIndex:0] isEqualToString:@"M"])
 	{
+		id interface = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 		NSArray *menuitems = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
-		[layer initMenu:menuitems];
+		[interface initMenu:menuitems];
 		NSLog(@"Menu %@", [arr objectAtIndex:1]);
 	}
 	// TURN
 	else if ([[arr objectAtIndex:0] isEqualToString:@"T"])
 	{
-		[layer setTurn:[arr objectAtIndex:1]];
+		id interface = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
+		[interface setTurn:[arr objectAtIndex:1]];
 		NSLog(@"Turno: %@", [arr objectAtIndex:1]);
 	}
+	// CHARACTER
+	else if ([[arr objectAtIndex:0] isEqualToString:@"C1"])
+	{
+		id game = [[[CCDirector sharedDirector] runningScene] getChildByTag:0];
+		int pos = 1;
+		NSArray *chrs = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
+		for (NSString *c in chrs)
+		{
+			NSArray *attr = [c componentsSeparatedByString:@","];
+			[game addMyCharacter:attr position:pos];
+			pos = pos + 1;
+		}
+	}
+	else if ([[arr objectAtIndex:0] isEqualToString:@"C2"])
+	{
+		id game = [[[CCDirector sharedDirector] runningScene] getChildByTag:0];
+		int pos = 1;
+		NSArray *chrs = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
+		for (NSString *c in chrs)
+		{
+			NSArray *attr = [c componentsSeparatedByString:@","];
+			[game addEnemyCharacter:attr position:pos];
+			pos = pos + 1;
+		}
+	}
+	// ECHO
 	else if ([[arr objectAtIndex:0] isEqualToString:@"E"])
 	{
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Avviso" message:[arr objectAtIndex:1] delegate:self cancelButtonTitle:@"Annulla" otherButtonTitles:@"Ok", nil];

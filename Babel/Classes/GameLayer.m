@@ -24,6 +24,27 @@
 	return self;
 }
 
+-(void) addMyCharacter:(NSArray *)attr position:(int)p
+{
+	NSString *fname = [[[NSString alloc] initWithFormat:@"%@", [attr objectAtIndex:1]] stringByAppendingString:@".png"];
+	CCSprite *sprite = [CCSprite spriteWithFile:fname];
+	sprite.scale = 0.4;
+	sprite.anchorPoint = CGPointZero;
+	sprite.position = ccp(125 - 25 * p, 150 - 35 * p);
+	[self addChild:sprite z:p tag:10+p];
+}
+
+-(void) addEnemyCharacter:(NSArray *)attr position:(int)p
+{
+	NSString *fname = [[[NSString alloc] initWithFormat:@"%@", [attr objectAtIndex:1]] stringByAppendingString:@".png"];
+	CCSprite *sprite = [CCSprite spriteWithFile:fname];
+	sprite.scale = 0.4;
+	sprite.scaleX = -0.4;
+	sprite.anchorPoint = CGPointZero;
+	sprite.position = ccp(350 + 25 * p, 150 - 35 * p);
+	[self addChild:sprite z:p tag:20+p];
+}
+
 // on "dealloc" you need to release all your retained objects
 -(void) dealloc
 {	
