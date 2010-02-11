@@ -104,6 +104,14 @@ class Database(object):
     def delArena(self, a):
         k = a["id"]
         return self.delete("arena", "id=%s" % k)
+    
+    def getTeam(self, uid):
+        r = self.select("id, char_id, level, hp, mp", 
+                        "collection", 
+                        "user_id='%s' and team=1" % uid)
+        if r:
+            r = r
+        return r
 
 
 if __name__ == "__main__":
