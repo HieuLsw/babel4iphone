@@ -10,7 +10,8 @@ class Core(object):
         self.__db = Database()
         self.__c = {}
         
-        self.__mmenu = gettext("Attack;Defende;Magics;Invocations;Items;Team;Settings")
+        # menu principale fisso unico
+        self.__mmenu = gettext("Attacco;Difesa;Magie;Invocazioni;Oggetti")
     
     def getSockets(self):
         return [c.socket for c in self.__c.values()]
@@ -51,8 +52,8 @@ class Core(object):
             self.__server.sendLine(s, "E|%s" % gettext("Aspetta 2 secondi per riloggare"))
         elif c:
             self.setClientMap(uid, c)
-            print gettext("Aggiunto client uid %s") % uid
             self.__server.sendLine(s, "N|%s" % name)
+            print gettext("Aggiunto client uid %s") % uid
         else:
             self.__server.sendLine(s, "E|%s" % gettext("Non sei registrato"))
     
@@ -69,7 +70,7 @@ class Core(object):
         arena = self.__db.getAllArena()
         for a in arena:
             t = a["time"]
-            if time.time() - t > 15: # change turn
+            if t != 0 and time.time() - t > 20: # change turn
                 mode = 0
                 uids = [a["user_id1"], a["user_id2"]]
                 clients = [self.getClient(u) for u in uids]
@@ -124,18 +125,40 @@ class Core(object):
         
         arena = self.__db.getArena(c1.uid, c2.uid)
         if not arena:
-            if self.__db.createArena(c1.uid, c2.uid, c2.uid, time.time()):
+            if self.__db.createArena(c1.uid, c2.uid, c1.uid, 0):
+                # invio dati team
+                self.__sendTeam(c1, c2, 1) # 1 manda i dati dei team a tutti e 2 i client
+                
+                self.__server.sendLine(c1.socket, ["T|%s" % c1.name, "M|%s" % self.__mmenu])
+                self.__server.sendLine(c2.socket, "T|%s" % c1.name)
+                
+                a = self.__db.getArenaByUser(c1.uid)
+                a["time"] = time.time()  # mettere il time solo dopo aver inviato i dati ai client
+                self.__db.updateArena(a) # tolto lo 0 il main loop comincia x l'arena
                 print gettext("Creata arena %s|%s") % (c1.uid, c2.uid)
-                self.__server.sendLine(c2.socket, ["T|%s" % c2.name, "M|%s" % self.__mmenu])
-                self.__server.sendLine(c1.socket, "T|%s" % c2.name)
-                # inviare ai 2 anche tutti i dati del combattimento
         elif mode >= 3:
+            # invio dati team solo a c1 se cade (a chi rientra appunto)
+            self.__sendTeam(c1, c2)
+            
             msgs = ["T|%s" % self.getClient(arena["turn"]).name]
             if c1.uid == arena["turn"]:
                 msgs.append("M|%s" % self.__mmenu)
             self.__server.sendLine(c1.socket, msgs)
             print gettext("Client rientrato nell'arena %s|%s") % (c1.uid, c2.uid)
-            # mandargli i dati e il turno di ora a quello rientrato da arena
+    
+    def __sendTeam(self, c1, c2, flag = 0):
+        d1 = ["%s,%s,%s,%s,%s" % \
+                  (x["id"], x["char_id"], x["level"], x["hp"], x["mp"]) for x in self.__db.getTeam(c1.uid)]
+        d2 = ["%s,%s,%s,%s,%s" % \
+                  (x["id"], x["char_id"], x["level"], x["hp"], x["mp"]) for x in self.__db.getTeam(c2.uid)]
+        t1 = ';'.join(d1)
+        t2 = ';'.join(d2)
+        msgs = ["C1|%s" % t1, "C2|%s" % t2]
+        
+        self.__server.sendLine(c1.socket, msgs)
+        if flag:
+            msgs = ["C1|%s" % t2, "C2|%s" % t1]
+            self.__server.sendLine(c2.socket, msgs)
     
     def delArena(self, a):
         if self.__db.delArena(a):
