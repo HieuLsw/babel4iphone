@@ -27,6 +27,9 @@ class ClientProtocol(LineReceiver):
                         elif 'E' == m[0]:
                             print "Echo: %s" % m[1]
                             cocos.director.director.scene.get("interface").update_label(m[1])
+                        elif 'M' == m[0]:
+                            print "Menu: %s" % m[1]
+                            cocos.director.director.scene.get("interface").initMenu(m[1].split(';'))
                         elif 'T' == m[0]:
                             cocos.director.director.scene.get("interface").setTurn(m[1])
                         else:

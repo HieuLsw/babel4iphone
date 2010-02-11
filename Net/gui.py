@@ -56,15 +56,18 @@ class InterfaceLayer(cocos.layer.Layer):
         self.lock.release()
     
     def setTurn(self, n):
-        if n != self.name:
+        if "fine" == n:
+            self.closeMenu()
+            self.update_label("Fine combattimento")            
+        elif n != self.name:
             self.closeMenu()
             self.update_label("E` il turno di %s" % n)
         else:
             self.update_label("E` il tuo turno")
-            self.initMenu()
     
-    def initMenu(self):
+    def initMenu(self, menuitems = []):
         self.backmenu.visible = True
+        print menuitems
     
     def closeMenu(self):
         self.backmenu.visible = False
