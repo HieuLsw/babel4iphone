@@ -1,6 +1,6 @@
 # Utils Functions
 
-def gettext(text):
+def get_text(text):
     return text
 
 def next(l, e):

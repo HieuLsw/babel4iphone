@@ -19,11 +19,11 @@ class Server(object):
             self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.server.bind((host, port))
             self.server.listen(backlog)
-            print gettext("Server avviato [%s:%s]") % (host, port)
+            print "Server avviato [%s:%s]" % (host, port)
         except socket.error, (value, message):
             if self.server:
                 self.server.close()
-            print gettext("Errore nell'avvio: %s") % message
+            print "Errore nell'avvio: %s" % message
             sys.exit(1)
         
         signal.signal(signal.SIGINT, self.sighandler) # ctrl-c
@@ -31,7 +31,7 @@ class Server(object):
         self.__start()
     
     def sighandler(self, signum, frame):
-        print gettext("Arresto del server...")
+        print "Arresto del server..."
         for s in self.__core.getSockets():
             s.close()
         self.server.close()
@@ -102,11 +102,11 @@ class Server(object):
                             self.__core.createArena(c1, c2)
                         elif 'E' == m[0]:
                             c1 = self.__core.getClientBySocket(s)
-                            print gettext("Echo %s: %s") % (c1.uid, m[1])
+                            print "Echo %s: %s" % (c1.uid, m[1])
                         elif 'M' == m[0]:
-                            print gettext("Richisto menu: %s") % m[1]
+                            print "Richisto menu: %s" % m[1]
                         else:
-                            print gettext("Comando non implementato: %s") % m
+                            print "Comando non implementato: %s" % m
 
 
 if __name__ == "__main__":
