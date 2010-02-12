@@ -118,22 +118,22 @@
 -(void) setTurn:(NSString *)name
 {
 	CCLabel *lb = (CCLabel *)[self getChildByTag:1];
-	if ([name isEqualToString:@"fine"])
+	if ([name isEqualToString:@"end"])
 	{
 		turn = NO;
 		[self closeMenu];
-		[lb setString:@"Fine del combattimento"];
+		[lb setString:@"End of fight"];
 	}
-	else if ([[[SharedData Initialize] name] isEqualToString:name])
+	else if ([name isEqualToString:@"you"])
 	{
 		turn = YES;
-		[lb setString:@"E' il tuo turno"];
+		[lb setString:@"It's your turn"];
 	}
 	else
 	{
 		turn = NO;
 		[self closeMenu];
-		[lb setString:[@"E' il turno di " stringByAppendingString:name]];
+		[lb setString:[@"It's turn of " stringByAppendingString:name]];
 	}
 }
 

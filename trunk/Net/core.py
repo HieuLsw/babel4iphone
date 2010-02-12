@@ -13,7 +13,7 @@ class Core(object):
         self.__an = 0
         
         # menu principale fisso unico
-        self.__mmenu = "Attacco;Difesa;Magie;Invocazioni;Oggetti"
+        self.__mmenu = "Attack;Defende;Magics;Invocations;Items"
     
     def getSockets(self):
         return [c.socket for c in self.__c.values()]
@@ -48,20 +48,19 @@ class Core(object):
             print e
         
         if self.getClient(uid): # lo sleep potrebbe aspettare a ripulire il vecchio socket in caso di rilogin
-            self.__server.sendLine(s, "E|Aspetta 2 secondi per riloggare")
+            self.__server.sendLine(s, "E|Wait 2 seconds for re-login")
         elif c:
             self.setClientMap(uid, c)
-            #self.__server.sendLine(s, "N|%s" % name)
-            print "Aggiunto client uid %s" % uid
+            print "Add client uid %s" % uid
         else:
-            self.__server.sendLine(s, "E|Non sei registrato")
+            self.__server.sendLine(s, "E|You don't have registration")
     
     def delClientBySocket(self, s):
         c = self.getClientBySocket(s)
         if c:
             c.socket.close()
             self.delClientMap(c.uid)
-            print "Cancellato client uid %s" % c.uid
+            print "Del client uid %s" % c.uid
         else:
             s.close()
     
@@ -84,7 +83,7 @@ class Core(object):
                 
                 if mode < 3:
                     if mode > 0:
-                        self.__server.sendLine(other.socket, "T|fine")
+                        self.__server.sendLine(other.socket, "T|end")
                         self.delArena(a)
                         return
                 else:
@@ -97,7 +96,7 @@ class Core(object):
                 for c in clients:
                     if c.uid == a["turn"]:
                         self.__server.sendLine(c.socket, 
-                                               ["T|%s" % c.name, 
+                                               ["T|you", 
                                                 "M|%s" % self.__mmenu])
                     else:
                         self.__server.sendLine(c.socket, 
@@ -118,7 +117,7 @@ class Core(object):
     def delArena(self, a):
         del self.__a[a["user_id1"]]
         del self.__a[a["user_id2"]]
-        print "Cancellata arena id %s|%s" % (a["user_id1"], a["user_id2"])
+        print "Del arena id %s|%s" % (a["user_id1"], a["user_id2"])
     
     def __createArena(self, u1, u2, turn, time):
         arena = {"id":self.__an, "user_id1":u1, "user_id2":u2, "turn":turn, "time":time}
@@ -128,19 +127,19 @@ class Core(object):
     
     def createArena(self, c1, c2):
         if not c2:
-            self.__server.sendLine(c1.socket, "E|Utente non connesso")
+            self.__server.sendLine(c1.socket, "E|Player off-line")
             return
         
         mode = 0
         tmp = self.__getArenaByUid(c1.uid)
         if tmp and c2.uid != tmp["user_id1"] and c2.uid != tmp["user_id2"]:
-            self.__server.sendLine(c1.socket, "E|Sei impegnato con un altro utente")
+            self.__server.sendLine(c1.socket, "E|You are in another arena")
             return
         else:
             mode += 1
         tmp = self.__getArenaByUid(c2.uid)
         if tmp and c1.uid != tmp["user_id1"] and c1.uid != tmp["user_id2"]:
-            self.__server.sendLine(c1.socket, "E|Utente impegnato")
+            self.__server.sendLine(c1.socket, "E|Player busy")
             return
         else:
             mode += 2
@@ -151,20 +150,22 @@ class Core(object):
             # invio dati team
             self.__sendParty(c1, c2, 1) # 1 manda i dati dei team a tutti e 2 i client
             
-            self.__server.sendLine(c1.socket, ["T|%s" % c1.name, "M|%s" % self.__mmenu])
+            self.__server.sendLine(c1.socket, ["T|you", "M|%s" % self.__mmenu])
             self.__server.sendLine(c2.socket, "T|%s" % c1.name)
             
             self.__a[c1.uid]["time"] = time.time()  # mettere il time solo dopo aver inviato i dati ai client
-            print "Creata arena %s|%s" % (c1.uid, c2.uid)
+            print "Create arena %s|%s" % (c1.uid, c2.uid)
         elif mode >= 3:
             # invio dati team solo a c1 se cade (a chi rientra appunto)
             self.__sendParty(c1, c2)
             
-            msgs = ["T|%s" % self.getClient(arena["turn"]).name]
+            msgs = None
             if c1.uid == arena["turn"]:
-                msgs.append("M|%s" % self.__mmenu)
+                msgs = ["T|you", "M|%s" % self.__mmenu]
+            else:
+                msgs = ["T|%s" % self.getClient(arena["turn"]).name]
             self.__server.sendLine(c1.socket, msgs)
-            print "Client rientrato nell'arena %s|%s" % (c1.uid, c2.uid)
+            print "Client re-enter in arena %s|%s" % (c1.uid, c2.uid)
     
     def __sendParty(self, c1, c2, flag = 0):
         d1 = ["%s,%s,%s,%s,%s" % \

@@ -14,15 +14,11 @@
 
 @implementation SharedData
 
-@synthesize name;
-
 -(void) dealloc
 {	
 	[inputStream release];
 	[outputStream release];
 	[DELIMETER release];
-	
-	[name release];
 	
 	NSLog(@"------------------- RELEASE SINGETON DATA ----------------------");
 	
@@ -125,29 +121,23 @@
 {
 	NSArray *arr = [msg componentsSeparatedByString:@"|"];
 	
-	// INIT NAME (for turn)
-	if ([[arr objectAtIndex:0] isEqualToString:@"N"])
-	{
-		name = [[NSString alloc] initWithString:[arr objectAtIndex:1]];
-		NSLog(@"Connesso come: %@", [arr objectAtIndex:1]);
-	}
 	// MENU
-	else if ([[arr objectAtIndex:0] isEqualToString:@"M"])
+	if ([[arr objectAtIndex:0] isEqualToString:@"M"])
 	{
 		id interface = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 		NSArray *menuitems = [[arr objectAtIndex:1] componentsSeparatedByString:@";"];
 		[interface initMenu:menuitems];
-		NSLog(@"Menu %@", [arr objectAtIndex:1]);
+		NSLog(@"Menu: %@", [arr objectAtIndex:1]);
 	}
 	// TURN
 	else if ([[arr objectAtIndex:0] isEqualToString:@"T"])
 	{
 		id interface = [[[CCDirector sharedDirector] runningScene] getChildByTag:1];
 		[interface setTurn:[arr objectAtIndex:1]];
-		NSLog(@"Turno: %@", [arr objectAtIndex:1]);
+		NSLog(@"Turn: %@", [arr objectAtIndex:1]);
 	}
 	// CHARACTER
-	else if ([[arr objectAtIndex:0] isEqualToString:@"C1"])
+	else if ([[arr objectAtIndex:0] isEqualToString:@"P1"])
 	{
 		id game = [[[CCDirector sharedDirector] runningScene] getChildByTag:0];
 		int pos = 1;
@@ -159,7 +149,7 @@
 			pos = pos + 1;
 		}
 	}
-	else if ([[arr objectAtIndex:0] isEqualToString:@"C2"])
+	else if ([[arr objectAtIndex:0] isEqualToString:@"P2"])
 	{
 		id game = [[[CCDirector sharedDirector] runningScene] getChildByTag:0];
 		int pos = 1;
@@ -174,14 +164,13 @@
 	// ECHO
 	else if ([[arr objectAtIndex:0] isEqualToString:@"E"])
 	{
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Avviso" message:[arr objectAtIndex:1] delegate:self cancelButtonTitle:@"Annulla" otherButtonTitles:@"Ok", nil];
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message" message:[arr objectAtIndex:1] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
 		[alert show];
 		[alert release];
-		NSLog(@"Echo... %@", [arr objectAtIndex:1]);
 	}
 	// NOT IMPLEMENTED
 	else
-		NSLog(@"Messaggio non implementato : %@", arr);
+		NSLog(@"Not implemented: %@", arr);
 }
 
 -(void) alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
