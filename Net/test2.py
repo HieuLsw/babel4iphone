@@ -1,8 +1,8 @@
 from twisted.internet import reactor
-from twisted.internet.threads import deferToThread
+#from twisted.internet.threads import deferToThread
 from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
-from gui import *
+#from gui import *
 import random
 
 class ClientProtocol(LineReceiver):
@@ -22,16 +22,17 @@ class ClientProtocol(LineReceiver):
                 if m:
                     try:
                         if 'N' == m[0]:
-                            cocos.director.director.scene.get("interface").setName(m[1])
+                            #cocos.director.director.scene.get("interface").setName(m[1])
                             print "Mio nome %s" % m[1]
                         elif 'E' == m[0]:
                             print "Echo: %s" % m[1]
-                            cocos.director.director.scene.get("interface").update_label(m[1])
+                            #cocos.director.director.scene.get("interface").update_label(m[1])
                         elif 'M' == m[0]:
                             print "Menu: %s" % m[1]
-                            cocos.director.director.scene.get("interface").initMenu(m[1].split(';'))
+                            #cocos.director.director.scene.get("interface").initMenu(m[1].split(';'))
                         elif 'T' == m[0]:
-                            cocos.director.director.scene.get("interface").setTurn(m[1])
+                            print "E' il turno di %s" % m[1]
+                            #cocos.director.director.scene.get("interface").setTurn(m[1])
                         else:
                             print "Comando non implementato: %s" % m
                     except:
@@ -70,7 +71,7 @@ def loop(f):
 
 
 if __name__=="__main__":
-    deferToThread(initGUI)
+    #deferToThread(initGUI)
     f = ClientFactory()
     reactor.connectTCP('localhost', 66666, f)
     reactor.callLater(1, loop, f)

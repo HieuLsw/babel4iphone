@@ -71,44 +71,10 @@ class Database(object):
             r = r[0]["name"]
         return r
     
-    def getAllArena(self):
-        return self.select("*", "arena")
-    
-    def getArena(self, uid1, uid2):
-        r = self.select("turn, time", 
-                        "arena", 
-                        "(user_id1='%s' and user_id2='%s') or " % (uid1, uid2) + \
-                            "(user_id1='%s' and user_id2='%s')" % (uid2, uid1))
-        if r:
-            r = r[0]
-        return r
-    
-    def getArenaByUser(self, uid):
-        r = self.select("*", 
-                        "arena", 
-                        "user_id1='%s' or user_id2='%s'" % (uid, uid))
-        if r:
-            r = r[0]
-        return r
-    
-    def createArena(self, uid1, uid2, turn, time):
-        return self.insert("arena", {"user_id1":"'%s'" % uid1, 
-                                     "user_id2":"'%s'" % uid2, 
-                                     "turn":"'%s'" % turn, 
-                                     "time":str(time)})
-    
-    def updateArena(self, a):
-        k, turn, time = a["id"], a["turn"], a["time"]
-        return self.update("arena", {"turn":"'%s'" % turn, "time":str(time)}, "id=%s" % k)
-    
-    def delArena(self, a):
-        k = a["id"]
-        return self.delete("arena", "id=%s" % k)
-    
-    def getTeam(self, uid):
+    def getParty(self, uid):
         r = self.select("id, char_id, level, hp, mp", 
                         "collection", 
-                        "user_id='%s' and team=1" % uid)
+                        "user_id='%s' and party=1" % uid)
         if r:
             r = r
         return r
@@ -116,8 +82,5 @@ class Database(object):
 
 if __name__ == "__main__":
     d = Database()
-    #for r in d.select("*", "user"):
-    #    print r
-    #print d.getNameByUid("6397D24E-299F-594E-BEE1-C1BBEA6C0B9E")
-    d.update("arena", {"user_id1":"'ciao'", "time": 0}, "id=4")
-    d.delArena(4)
+    for r in d.select("*", "user"):
+        print r
