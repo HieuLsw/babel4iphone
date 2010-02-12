@@ -1,5 +1,5 @@
-from client import Client
 from db import Database
+from client import Client
 from utils import *
 import time
 
@@ -35,10 +35,7 @@ class Core(object):
     def delClientMap(self, u):
         if self.__c.has_key(u):
             del self.__c[u]
-    
-    def clearClientsMap(self):
-        self.__c = {}
-    
+        
     # Main Function Server
     
     def addClient(self, uid, s):
@@ -54,7 +51,7 @@ class Core(object):
             self.__server.sendLine(s, "E|Aspetta 2 secondi per riloggare")
         elif c:
             self.setClientMap(uid, c)
-            self.__server.sendLine(s, "N|%s" % name)
+            #self.__server.sendLine(s, "N|%s" % name)
             print "Aggiunto client uid %s" % uid
         else:
             self.__server.sendLine(s, "E|Non sei registrato")
@@ -106,7 +103,7 @@ class Core(object):
                         self.__server.sendLine(c.socket, 
                                                "T|%s" % self.getClient(a["turn"]).name)
     
-    def __getArenaByUser(self, u):
+    def __getArenaByUid(self, u):
         if self.__a.has_key(u):
             return self.__a[u]
         return None
@@ -117,6 +114,11 @@ class Core(object):
             if not tmp.has_key(a["id"]):
                 tmp[a["id"]] = a
         return tmp.values()
+    
+    def delArena(self, a):
+        del self.__a[a["user_id1"]]
+        del self.__a[a["user_id2"]]
+        print "Cancellata arena id %s|%s" % (a["user_id1"], a["user_id2"])
     
     def __createArena(self, u1, u2, turn, time):
         arena = {"id":self.__an, "user_id1":u1, "user_id2":u2, "turn":turn, "time":time}
@@ -130,20 +132,20 @@ class Core(object):
             return
         
         mode = 0
-        tmp = self.__getArenaByUser(c1.uid)
+        tmp = self.__getArenaByUid(c1.uid)
         if tmp and c2.uid != tmp["user_id1"] and c2.uid != tmp["user_id2"]:
             self.__server.sendLine(c1.socket, "E|Sei impegnato con un altro utente")
             return
         else:
             mode += 1
-        tmp = self.__getArenaByUser(c2.uid)
+        tmp = self.__getArenaByUid(c2.uid)
         if tmp and c1.uid != tmp["user_id1"] and c1.uid != tmp["user_id2"]:
             self.__server.sendLine(c1.socket, "E|Utente impegnato")
             return
         else:
             mode += 2
         
-        arena = self.__getArenaByUser(c1.uid)
+        arena = self.__getArenaByUid(c1.uid)
         if not arena:
             self.__createArena(c1.uid, c2.uid, c1.uid, 0)
             # invio dati team
@@ -177,8 +179,3 @@ class Core(object):
         if flag:
             msgs = ["P1|%s" % t2, "P2|%s" % t1]
             self.__server.sendLine(c2.socket, msgs)
-    
-    def delArena(self, a):
-        del self.__a[a["user_id1"]]
-        del self.__a[a["user_id2"]]
-        print "Cancellata arena id %s|%s" % (a["user_id1"], a["user_id2"])

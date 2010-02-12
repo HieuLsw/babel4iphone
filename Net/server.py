@@ -2,8 +2,7 @@
 
 from core import Core
 from reactor import *
-from utils import *
-from types import StringType, ListType
+from types import StringType
 import select, socket, sys, signal
 
 SHOST = "localhost"
@@ -39,20 +38,11 @@ class Server(object):
     def sendLine(self, s, msg, t = 0):
         if type(msg) is StringType:
             msg = [msg]
-        clean_msg = []
-        for m in msg:
-            m = str(m)
-            m = m.replace("\r", "")
-            m = m.replace("\n", "")
-            clean_msg.append(m)
-        msg = DELIMETER.join(clean_msg)        
+        msg = DELIMETER.join(msg)  
         reactor.callLater(t, s.send, msg + DELIMETER)
     
     def __start(self):
-        self.__core.clearClientsMap()
-        
         running = 1
-        
         while running:
             try:
                 inputs = [self.server, sys.stdin]
@@ -101,8 +91,7 @@ class Server(object):
                             c2 = self.__core.getClient(m[1])
                             self.__core.createArena(c1, c2)
                         elif 'E' == m[0]:
-                            c1 = self.__core.getClientBySocket(s)
-                            print "Echo %s: %s" % (c1.uid, m[1])
+                            print "Echo client: %s" % m[1]
                         elif 'M' == m[0]:
                             print "Richisto menu: %s" % m[1]
                         else:
