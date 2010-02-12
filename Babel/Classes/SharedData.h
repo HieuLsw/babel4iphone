@@ -14,9 +14,6 @@
 	NSInputStream *inputStream;
 	NSOutputStream *outputStream;
 	NSString *DELIMETER;
-	
-	// data
-	NSString *name;
 }
 
 @property (nonatomic, retain) NSString *name;
