@@ -1,11 +1,14 @@
-import sys, MySQLdb
+#import sys, MySQLdb
+import sys, sqlite3
 
 class Database(object):
     
     def __init__(self, h = "localhost", u = "root", p = "", db = "gameDB"):
         self.conn = None
         try:
-            self.conn = MySQLdb.connect(h, u, p, db)
+            #self.conn = MySQLdb.connect(h, u, p, db)
+            self.conn = sqlite3.connect('../Babel/Resources/gameDB.sqlite')
+            self.conn.row_factory = sqlite3.Row
         except Exception, e:
             print e
             self.close()
@@ -16,10 +19,22 @@ class Database(object):
             self.conn.close()
     
     def select(self, select, table, where = "'1'"):
-        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+        #cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+        cursor = self.conn.cursor()
         sql = "SELECT %s FROM %s WHERE %s;" % (select, table, where)
-        cursor.execute(sql)
-        return cursor.fetchall()
+        c = cursor.execute(sql)
+        tmp = cursor.fetchall()
+        
+        # x sqlite return dict
+        result = []
+        for r in tmp:
+            i = 0
+            row = {}
+            for k in r.keys():
+                row.update({k: r[i]})
+                i += 1
+            result.append(row)
+        return result
     
     def insert(self, table, fields):
         result = True
@@ -27,7 +42,8 @@ class Database(object):
             cursor = self.conn.cursor()
             keys = fields.keys()
             values = fields.values()
-            sql = "INSERT INTO %s(%s) VALUES(%s);" % (table, ','.join(keys), ','.join(values))
+            sql = "INSERT INTO %s (%s) VALUES (%s);" % (table, ','.join(keys), ','.join(values))
+            print sql
             cursor.execute(sql)
             self.conn.commit()
         except Exception, e:
@@ -84,3 +100,6 @@ if __name__ == "__main__":
     d = Database()
     for r in d.select("*", "user"):
         print r
+    #print d.insert("user", {"id":"'xxx'", "name":"'cazzo'"})
+    #print d.update("user", {"name":"'ver'"}, "id='xxx'")
+    #print d.delete("user", "id='xxx'")
