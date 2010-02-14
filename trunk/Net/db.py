@@ -3,11 +3,12 @@ import sys, sqlite3
 
 class Database(object):
     
-    def __init__(self, h = "localhost", u = "root", p = "", db = "gameDB"):
+    #def __init__(self, h = "localhost", u = "root", p = "", db = "gameDB"):
+    def __init__(self):
         self.conn = None
         try:
             #self.conn = MySQLdb.connect(h, u, p, db)
-            self.conn = sqlite3.connect('../Babel/Resources/gameDB.sqlite')
+            self.conn = sqlite3.connect("gameDB.sqlite")
             self.conn.row_factory = sqlite3.Row
         except Exception, e:
             print e
@@ -31,7 +32,7 @@ class Database(object):
             i = 0
             row = {}
             for k in r.keys():
-                row.update({k: r[i]})
+                row.update({k: str(r[i])})
                 i += 1
             result.append(row)
         return result
@@ -103,3 +104,4 @@ if __name__ == "__main__":
     #print d.insert("user", {"id":"'xxx'", "name":"'cazzo'"})
     #print d.update("user", {"name":"'ver'"}, "id='xxx'")
     #print d.delete("user", "id='xxx'")
+    #print d.getNameByUid("U55555")

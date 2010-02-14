@@ -216,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>88EBB2E1112716110001BDD4</string>
+						<string>889163E211282A5600D96E58</string>
 						<key>history</key>
 						<array>
-							<string>886C9AC01125D57000939774</string>
+							<string>88EBB2E1112716110001BDD4</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -366,7 +366,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>88EBB2E0112716110001BDD4</string>
+										<string>889163DF11282A5600D96E58</string>
 										<key>history</key>
 										<array>
 											<string>887E47C510C6EAC600F260C8</string>
@@ -421,7 +421,7 @@
 											<string>886C9ABA1125D57000939774</string>
 											<string>88EBB2DD112716110001BDD4</string>
 											<string>88EBB2DE112716110001BDD4</string>
-											<string>88EBB2DF112716110001BDD4</string>
+											<string>88EBB2E0112716110001BDD4</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -433,14 +433,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1131, 563}}</string>
+								<string>{{0, 0}, {1131, 557}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 59 1440 819 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>563pt</string>
+							<string>557pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -453,14 +453,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 568}, {1131, 210}}</string>
+								<string>{{0, 562}, {1131, 216}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 59 1440 819 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>210pt</string>
+							<string>216pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -479,9 +479,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>88EBB2D5112713970001BDD4</string>
+				<string>889163E011282A5600D96E58</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>88EBB2D6112713970001BDD4</string>
+				<string>889163E111282A5600D96E58</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -619,11 +619,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>887E47A910C6EA4900F260C8</string>
-		<string>88F025EF11176D1A00ED84F3</string>
-		<string>1C78EAAD065D492600B07095</string>
 		<string>/Users/amati/Code/babel4iphone/Babel/Babel.xcodeproj</string>
+		<string>88F025EF11176D1A00ED84F3</string>
 	</array>
 	<key>WindowString</key>
 	<string>0 59 1440 819 0 0 1440 878 </string>
@@ -703,7 +701,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>887E47A910C6EA4900F260C8</string>
-				<string>88EBB2D8112713970001BDD4</string>
+				<string>889163E311282A5600D96E58</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
