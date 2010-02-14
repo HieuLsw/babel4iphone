@@ -38,7 +38,7 @@ class Server(object):
     def sendLine(self, s, msg, t = 0):
         if type(msg) is StringType:
             msg = [msg]
-        msg = DELIMETER.join(msg)  
+        msg = DELIMETER.join(msg)
         reactor.callLater(t, s.send, msg + DELIMETER)
     
     def __start(self):
