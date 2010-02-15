@@ -4,11 +4,11 @@ import sys, sqlite3
 class Database(object):
     
     #def __init__(self, h = "localhost", u = "root", p = "", db = "gameDB"):
-    def __init__(self):
+    def __init__(self, db = "gameDB.sqlite"):
         self.conn = None
         try:
             #self.conn = MySQLdb.connect(h, u, p, db)
-            self.conn = sqlite3.connect("gameDB.sqlite")
+            self.conn = sqlite3.connect(db)
             self.conn.row_factory = sqlite3.Row
         except Exception, e:
             print e
@@ -18,6 +18,18 @@ class Database(object):
     def close(self):
         if self.conn:
             self.conn.close()
+    
+    def execute(self, sql):
+        result = True
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(sql)
+            self.conn.commit()
+        except Exception, e:
+            print e
+            result = False
+            self.conn.rollback()
+        return result
     
     def select(self, select, table, where = "'1'"):
         #cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
@@ -31,7 +43,14 @@ class Database(object):
         for r in tmp:
             i = 0
             row = {}
-            for k in r.keys():
+            
+            col = []
+            try:
+                col = cursor.keys()
+            except:
+                col = [c[0] for c in cursor.description]
+            
+            for k in col:
                 row.update({k: str(r[i])})
                 i += 1
             result.append(row)
@@ -44,7 +63,6 @@ class Database(object):
             keys = fields.keys()
             values = fields.values()
             sql = "INSERT INTO %s (%s) VALUES (%s);" % (table, ','.join(keys), ','.join(values))
-            print sql
             cursor.execute(sql)
             self.conn.commit()
         except Exception, e:
@@ -98,10 +116,27 @@ class Database(object):
 
 
 if __name__ == "__main__":
-    d = Database()
-    for r in d.select("*", "user"):
+    # questo codice permette di creare un db solo delle info dei character per il client
+    import os
+    
+    fname = "../Babel/Resources/gameDB.sqlite"
+    try:
+        os.remove(fname)
+    except:
+        pass
+    
+    s = Database()
+    d = Database(fname)
+    
+    sql = 'CREATE TABLE "character" ("id" INTEGER PRIMARY KEY  NOT NULL ,"name" VARCHAR(50) NOT NULL ,"race" VARCHAR(50) NOT NULL ,"atk" INTEGER DEFAULT 0 ,"def" INTEGER DEFAULT 0 ,"matk" INTEGER DEFAULT 0 ,"mdef" INTEGER DEFAULT 0 )'
+    
+    d.execute(sql)
+    
+    for r in s.select("*", "character"):
+        r["race"] = "'%s'" % r["race"]
+        r["name"] = "'%s'" % r["name"]
+        d.insert("character", r)
+    
+    # stampa dell'db
+    for r in d.select("*", "character"):
         print r
-    #print d.insert("user", {"id":"'xxx'", "name":"'cazzo'"})
-    #print d.update("user", {"name":"'ver'"}, "id='xxx'")
-    #print d.delete("user", "id='xxx'")
-    #print d.getNameByUid("U55555")
