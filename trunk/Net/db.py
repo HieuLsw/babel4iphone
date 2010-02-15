@@ -122,21 +122,30 @@ if __name__ == "__main__":
     fname = "../Babel/Resources/gameDB.sqlite"
     try:
         os.remove(fname)
+        print "Rimozione del vecchio database client."
     except:
-        pass
+        print "Il database client non esiste."
     
     s = Database()
     d = Database(fname)
     
     sql = 'CREATE TABLE "character" ("id" INTEGER PRIMARY KEY  NOT NULL ,"name" VARCHAR(50) NOT NULL ,"race" VARCHAR(50) NOT NULL ,"atk" INTEGER DEFAULT 0 ,"def" INTEGER DEFAULT 0 ,"matk" INTEGER DEFAULT 0 ,"mdef" INTEGER DEFAULT 0 )'
     
-    d.execute(sql)
-    
-    for r in s.select("*", "character"):
-        r["race"] = "'%s'" % r["race"]
-        r["name"] = "'%s'" % r["name"]
-        d.insert("character", r)
-    
-    # stampa dell'db
-    for r in d.select("*", "character"):
-        print r
+    if d.execute(sql):
+        print "Creato nuovo database client."
+        
+        check = False
+        for r in s.select("*", "character"):
+            r["race"] = "'%s'" % r["race"]
+            r["name"] = "'%s'" % r["name"]
+            if not d.insert("character", r):
+                check = True
+        
+        # stampa del nuovo db
+        print "Database client popolato con le entry..."
+        for r in d.select("*", "character"):
+            print r
+        if check:
+            print "ERRORE: Alcuni character possono non essere stati inseriti!!!"
+    else:
+        print "Impossibile creare nuovo database client."
