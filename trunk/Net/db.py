@@ -122,7 +122,7 @@ if __name__ == "__main__":
     fname = "../Babel/Resources/gameDB.sqlite"
     try:
         os.remove(fname)
-        print "Rimozione del vecchio database client."
+        print "Rimosso il vecchio database client."
     except:
         print "Il database client non esiste."
     
